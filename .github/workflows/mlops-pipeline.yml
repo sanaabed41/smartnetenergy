@@ -11,36 +11,34 @@ env:
   IMAGE_NAME: smartnetenergy-api
 
 jobs:
-  # Job 1 : Tests automatiques
   test:
     name: Tests API
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          pip install -r api/requirements.txt
-          pip install pytest httpx
+          pip install fastapi uvicorn pydantic numpy scikit-learn joblib httpx pytest
 
       - name: Run tests
-        run: pytest api/tests/ -v
+        working-directory: ./api
+        run: pytest tests/ -v
 
-  # Job 2 : Build Docker
   build:
     name: Build & Push Docker
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Login to ACR
-        uses: azure/docker-login@v1
+        uses: azure/docker-login@v2
         with:
           login-server: smartnetenergycr.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
@@ -53,16 +51,15 @@ jobs:
           docker push smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }}
           docker push smartnetenergycr.azurecr.io/smartnetenergy-api:latest
 
-  # Job 3 : Déploiement
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -74,13 +71,11 @@ jobs:
           resourceGroup: rg-smartnetenergy
           imageToDeploy: smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }}
 
-  # Job 4 : Notification
   notify:
     name: Notification
     runs-on: ubuntu-latest
     needs: deploy
     if: always()
     steps:
-      - name: Send email notification
-        run: |
-          echo "Pipeline completed with status: ${{ job.status }}"
+      - name: Pipeline status
+        run: echo "Pipeline completed with status ${{ job.status }}"
