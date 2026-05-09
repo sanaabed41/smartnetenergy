@@ -1,372 +1,477 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartNetEnergy — 5G Dashboard</title>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; }
-    .nav { background: #1e293b; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-    .nav-title { font-size: 1.4rem; font-weight: 700; color: #38bdf8; }
-    .nav-links { display: flex; gap: 1rem; }
-    .nav-link { padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; color: #94a3b8; border: none; background: none; font-size: 0.95rem; }
-    .nav-link.active { background: #0ea5e9; color: white; }
-    .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
-    .card { background: #1e293b; border-radius: 12px; padding: 1.5rem; border: 1px solid #334155; margin-bottom: 1.5rem; }
-    .card-title { font-size: 1.1rem; font-weight: 600; color: #38bdf8; margin-bottom: 1rem; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.4rem; }
-    .form-input { width: 100%; padding: 0.6rem 1rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: 0.95rem; }
-    .form-input:focus { outline: none; border-color: #0ea5e9; }
-    .btn { padding: 0.7rem 2rem; background: #0ea5e9; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; width: 100%; margin-top: 0.5rem; }
-    .btn:hover { background: #0284c7; }
-    .btn:disabled { background: #334155; cursor: not-allowed; }
-    .result-box { background: #0f172a; border-radius: 10px; padding: 1.5rem; text-align: center; border: 1px solid #0ea5e9; margin-top: 1rem; }
-    .result-value { font-size: 3rem; font-weight: 800; color: #38bdf8; }
-    .result-unit { font-size: 1rem; color: #94a3b8; margin-top: 0.3rem; }
-    .kpi-card { background: #0f172a; border-radius: 10px; padding: 1.2rem; text-align: center; border: 1px solid #334155; }
-    .kpi-value { font-size: 1.8rem; font-weight: 700; color: #38bdf8; }
-    .kpi-label { font-size: 0.8rem; color: #64748b; margin-top: 0.3rem; }
-    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-    .status-ok { background: #22c55e; }
-    .status-err { background: #ef4444; }
-    .badge { padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-    .badge-green { background: #166534; color: #86efac; }
-    .badge-blue { background: #1e3a5f; color: #93c5fd; }
-    .loading { text-align: center; padding: 2rem; color: #64748b; }
-    canvas { max-height: 280px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNetEnergy — 5G Energy Intelligence Platform</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04080a;--surface:#080f12;--card:#0b1519;--border:#0e2028;
+  --accent:#00d4ff;--accent2:#00ff88;--accent3:#ff6b35;
+  --text:#c8dde8;--muted:#3a6070;--dim:#1a3040;
+  --danger:#ff4757;--warn:#ffa502;--success:#2ed573;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:32px;height:32px;background:var(--dim);border:1px solid var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.brand-icon svg{width:18px;height:18px;fill:var(--accent)}
+.brand-name{font-size:15px;font-weight:600;color:var(--accent);letter-spacing:2px}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:1px}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--success);letter-spacing:1px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.time-display{font-family:'Courier New',monospace;font-size:12px;color:var(--muted)}
+
+.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 24px}
+.nav-item{padding:12px 18px;font-size:11px;letter-spacing:1.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-item:hover{color:var(--text)}
+.nav-item.active{color:var(--accent);border-bottom-color:var(--accent)}
+.nav-icon{width:14px;height:14px;opacity:0.7}
+
+.page{display:none;padding:20px 24px}
+.page.active{display:block}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent)}
+.kpi.warn::before{background:var(--warn)}
+.kpi.danger::before{background:var(--danger)}
+.kpi.success::before{background:var(--success)}
+.kpi-label{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.kpi-val{font-size:28px;font-weight:700;color:var(--accent);font-family:'Courier New',monospace;line-height:1}
+.kpi.warn .kpi-val{color:var(--warn)}
+.kpi.danger .kpi-val{color:var(--danger)}
+.kpi.success .kpi-val{color:var(--success)}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.kpi-trend{font-size:10px;margin-top:4px}
+.kpi-trend.up{color:var(--success)}
+.kpi-trend.down{color:var(--danger)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.grid-65{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:16px}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.card-title{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.badge{padding:3px 10px;border-radius:20px;font-size:9px;font-weight:600;letter-spacing:1px}
+.badge-blue{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2)}
+.badge-green{background:rgba(0,255,136,0.1);color:var(--success);border:1px solid rgba(0,255,136,0.2)}
+.badge-warn{background:rgba(255,165,2,0.1);color:var(--warn);border:1px solid rgba(255,165,2,0.2)}
+.badge-danger{background:rgba(255,71,87,0.1);color:var(--danger);border:1px solid rgba(255,71,87,0.2)}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.fg input{background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--accent);font-family:'Courier New',monospace;font-size:13px;width:100%;outline:none;transition:border-color 0.2s}
+.fg input:focus{border-color:var(--accent)}
+
+.slider-wrap{margin:8px 0}
+.slider-wrap label{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;display:flex;justify-content:space-between}
+.slider-wrap label span{color:var(--accent);font-family:'Courier New',monospace}
+input[type=range]{width:100%;margin-top:6px;-webkit-appearance:none;height:3px;background:var(--dim);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg)}
+
+.predict-btn{width:100%;padding:12px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:12px;transition:opacity 0.2s}
+.predict-btn:hover{opacity:0.85}
+.predict-btn:disabled{background:var(--dim);color:var(--muted);cursor:not-allowed;opacity:1}
+
+.result-display{background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:20px;text-align:center}
+.result-num{font-size:52px;font-weight:800;color:var(--accent);font-family:'Courier New',monospace;line-height:1}
+.result-unit{font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:4px}
+.result-status{font-size:11px;margin-top:10px;padding:6px 12px;border-radius:20px;display:inline-block}
+
+.progress-item{margin-bottom:10px}
+.progress-top{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}
+.progress-top .pl{color:var(--muted);letter-spacing:1px}
+.progress-top .pv{color:var(--text);font-family:'Courier New',monospace}
+.progress-bg{height:4px;background:var(--dim);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width 0.6s cubic-bezier(0.4,0,0.2,1)}
+
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px}
+.hist-item:last-child{border:none}
+.hist-time{color:var(--muted);font-family:'Courier New',monospace}
+.hist-params{color:var(--dim);font-size:10px}
+.hist-val{color:var(--accent);font-family:'Courier New',monospace;font-weight:600}
+
+.tower-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.tower-row:last-child{border:none}
+.tower-id{width:60px;font-family:'Courier New',monospace;font-size:12px;color:var(--accent)}
+.tower-bar-wrap{flex:1}
+.tower-bar-bg{height:6px;background:var(--dim);border-radius:3px}
+.tower-bar-fill{height:100%;border-radius:3px}
+.tower-energy{width:60px;text-align:right;font-family:'Courier New',monospace;font-size:11px}
+.tower-status{width:60px;text-align:right}
+
+.alert-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.alert-row:last-child{border:none}
+.alert-icon-wrap{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert-body{flex:1}
+.alert-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.alert-desc{font-size:11px;color:var(--muted);line-height:1.4}
+.alert-meta{font-size:10px;color:var(--dim);margin-top:4px;display:flex;gap:8px}
+
+.infra-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.infra-row:last-child{border:none}
+.infra-key{color:var(--muted)}
+.infra-val{color:var(--text);font-family:'Courier New',monospace;font-size:11px}
+.infra-ok{color:var(--success)}
+
+.endpoint-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px}
+.endpoint-row:last-child{border:none}
+.method-badge{padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;font-family:'Courier New',monospace;min-width:44px;text-align:center}
+.method-get{background:rgba(0,255,136,0.1);color:var(--success);border:1px solid rgba(0,255,136,0.2)}
+.method-post{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2)}
+.ep-path{color:var(--accent);font-family:'Courier New',monospace;flex:1}
+.ep-desc{color:var(--muted);font-size:10px}
+
+canvas{max-height:200px}
+
+.divider{height:1px;background:var(--border);margin:14px 0}
+.section-label{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.empty-state{text-align:center;padding:20px;font-size:11px;color:var(--dim)}
+</style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const API_URL = "https://smartnetenergy-api.gentlesmoke-2dbdff9e.germanywestcentral.azurecontainerapps.io";
 
-const { useState, useEffect, useRef } = React;
-
-function Navbar({ page, setPage }) {
-  return (
-    <nav className="nav">
-      <div className="nav-title">SmartNetEnergy 5G</div>
-      <div className="nav-links">
-        {['prediction', 'statistiques', 'monitoring'].map(p => (
-          <button key={p} className={`nav-link ${page === p ? 'active' : ''}`} onClick={() => setPage(p)}>
-            {p.charAt(0).toUpperCase() + p.slice(1)}
-          </button>
-        ))}
-      </div>
-    </nav>
-  );
-}
-
-function PredictionPage() {
-  const [form, setForm] = useState({
-    traffic_load: 1200, antenna_count: 64, bandwidth: 100,
-    tx_power: 43, frequency: 3500, esmode_sum: 2
-  });
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState([]);
-
-  const predict = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/predict`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
-      const data = await res.json();
-      setResult(data.energy_prediction);
-      setHistory(prev => [{...form, result: data.energy_prediction, time: new Date().toLocaleTimeString()}, ...prev.slice(0,4)]);
-    } catch(e) {
-      setResult('Erreur API');
-    }
-    setLoading(false);
-  };
-
-  const fields = [
-    { key: 'traffic_load', label: 'Trafic (Mbps)', min: 0, max: 10000 },
-    { key: 'antenna_count', label: 'Nombre antennes', min: 1, max: 256 },
-    { key: 'bandwidth', label: 'Bande passante (MHz)', min: 10, max: 400 },
-    { key: 'tx_power', label: 'Puissance TX (dBm)', min: 0, max: 60 },
-    { key: 'frequency', label: 'Fréquence (MHz)', min: 700, max: 6000 },
-    { key: 'esmode_sum', label: 'ESMode actifs (0-6)', min: 0, max: 6 },
-  ];
-
-  return (
-    <div className="container">
-      <div className="grid-2">
-        <div className="card">
-          <div className="card-title">Paramètres de la tour 5G</div>
-          {fields.map(f => (
-            <div className="form-group" key={f.key}>
-              <label className="form-label">{f.label}</label>
-              <input className="form-input" type="number" min={f.min} max={f.max}
-                value={form[f.key]} onChange={e => setForm({...form, [f.key]: parseFloat(e.target.value)})} />
-            </div>
-          ))}
-          <button className="btn" onClick={predict} disabled={loading}>
-            {loading ? 'Calcul en cours...' : 'Prédire la consommation'}
-          </button>
-        </div>
-        <div>
-          <div className="card">
-            <div className="card-title">Résultat de la prédiction</div>
-            {result !== null ? (
-              <div className="result-box">
-                <div className="result-value">{typeof result === 'number' ? result.toFixed(1) : result}</div>
-                <div className="result-unit">watts consommés</div>
-                <div style={{marginTop:'1rem', fontSize:'0.85rem', color:'#64748b'}}>
-                  Équivalent : {typeof result === 'number' ? (result/1000).toFixed(3) : '-'} kW
-                </div>
-              </div>
-            ) : (
-              <div className="loading">Renseignez les paramètres et lancez la prédiction</div>
-            )}
-          </div>
-          <div className="card">
-            <div className="card-title">Historique des prédictions</div>
-            {history.length === 0 ? (
-              <div className="loading">Aucune prédiction effectuée</div>
-            ) : history.map((h, i) => (
-              <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'0.5rem 0', borderBottom:'1px solid #334155', fontSize:'0.9rem'}}>
-                <span style={{color:'#94a3b8'}}>{h.time}</span>
-                <span>Load: {h.traffic_load} | Ant: {h.antenna_count}</span>
-                <span style={{color:'#38bdf8', fontWeight:700}}>{h.result.toFixed(1)} W</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
     </div>
-  );
-}
-
-function StatistiquesPage() {
-  const chartRef = useRef(null);
-  const chart2Ref = useRef(null);
-  const chartInstance = useRef(null);
-  const chart2Instance = useRef(null);
-
-  const scenarios = [
-    { tower: 'Tour A', load: 200, energy: 180 },
-    { tower: 'Tour B', load: 500, energy: 310 },
-    { tower: 'Tour C', load: 800, energy: 420 },
-    { tower: 'Tour D', load: 1200, energy: 540 },
-    { tower: 'Tour E', load: 1800, energy: 720 },
-    { tower: 'Tour F', load: 2400, energy: 890 },
-  ];
-
-  const kpis = [
-    { label: 'Consommation moyenne', value: '510 W' },
-    { label: 'Consommation max', value: '890 W' },
-    { label: 'Consommation min', value: '180 W' },
-    { label: 'Tours analysées', value: '6' },
-  ];
-
-  useEffect(() => {
-    if (chartInstance.current) chartInstance.current.destroy();
-    if (chart2Instance.current) chart2Instance.current.destroy();
-
-    chartInstance.current = new Chart(chartRef.current, {
-      type: 'bar',
-      data: {
-        labels: scenarios.map(s => s.tower),
-        datasets: [{
-          label: 'Consommation (W)',
-          data: scenarios.map(s => s.energy),
-          backgroundColor: '#0ea5e9',
-          borderRadius: 6,
-        }]
-      },
-      options: {
-        plugins: { legend: { labels: { color: '#94a3b8' } } },
-        scales: {
-          x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
-          y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
-        }
-      }
-    });
-
-    chart2Instance.current = new Chart(chart2Ref.current, {
-      type: 'line',
-      data: {
-        labels: scenarios.map(s => s.load + ' Mbps'),
-        datasets: [{
-          label: 'Énergie vs Trafic',
-          data: scenarios.map(s => s.energy),
-          borderColor: '#38bdf8',
-          backgroundColor: 'rgba(14,165,233,0.1)',
-          tension: 0.4,
-          fill: true,
-          pointBackgroundColor: '#0ea5e9',
-        }]
-      },
-      options: {
-        plugins: { legend: { labels: { color: '#94a3b8' } } },
-        scales: {
-          x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-          y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
-        }
-      }
-    });
-
-    return () => {
-      if (chartInstance.current) chartInstance.current.destroy();
-      if (chart2Instance.current) chart2Instance.current.destroy();
-    };
-  }, []);
-
-  return (
-    <div className="container">
-      <div className="grid-4" style={{marginBottom:'1.5rem'}}>
-        {kpis.map((k, i) => (
-          <div className="kpi-card" key={i}>
-            <div className="kpi-value">{k.value}</div>
-            <div className="kpi-label">{k.label}</div>
-          </div>
-        ))}
-      </div>
-      <div className="grid-2">
-        <div className="card">
-          <div className="card-title">Consommation par tour 5G</div>
-          <canvas ref={chartRef}></canvas>
-        </div>
-        <div className="card">
-          <div className="card-title">Trafic vs Consommation</div>
-          <canvas ref={chart2Ref}></canvas>
-        </div>
-      </div>
-      <div className="card">
-        <div className="card-title">Détail des tours</div>
-        <table style={{width:'100%', borderCollapse:'collapse', fontSize:'0.9rem'}}>
-          <thead>
-            <tr style={{borderBottom:'1px solid #334155', color:'#64748b'}}>
-              <th style={{padding:'0.6rem', textAlign:'left'}}>Tour</th>
-              <th style={{padding:'0.6rem', textAlign:'left'}}>Trafic (Mbps)</th>
-              <th style={{padding:'0.6rem', textAlign:'left'}}>Énergie (W)</th>
-              <th style={{padding:'0.6rem', textAlign:'left'}}>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            {scenarios.map((s, i) => (
-              <tr key={i} style={{borderBottom:'1px solid #1e3a5f'}}>
-                <td style={{padding:'0.6rem', fontWeight:600}}>{s.tower}</td>
-                <td style={{padding:'0.6rem', color:'#94a3b8'}}>{s.load}</td>
-                <td style={{padding:'0.6rem', color:'#38bdf8', fontWeight:700}}>{s.energy} W</td>
-                <td style={{padding:'0.6rem'}}>
-                  <span className={`badge ${s.energy > 700 ? 'badge-blue' : 'badge-green'}`}>
-                    {s.energy > 700 ? 'Élevée' : 'Normale'}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function MonitoringPage() {
-  const [status, setStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then(r => r.json())
-      .then(d => { setStatus(d); setLoading(false); })
-      .catch(() => { setStatus({ status: 'error', model_loaded: false }); setLoading(false); });
-  }, []);
-
-  const infos = [
-    { label: 'Resource Group', value: 'rg-smartnetenergy' },
-    { label: 'Région Azure', value: 'Germany West Central' },
-    { label: 'Container App', value: 'smartnetenergy-api' },
-    { label: 'Container Registry', value: 'smartnetenergycr.azurecr.io' },
-    { label: 'ML Workspace', value: 'aml-smartnetenergy' },
-    { label: 'Data Lake', value: 'smartnetenergydl' },
-    { label: 'CI/CD', value: 'GitHub Actions' },
-    { label: 'IaC', value: 'Terraform ~3.0' },
-  ];
-
-  return (
-    <div className="container">
-      <div className="grid-3" style={{marginBottom:'1.5rem'}}>
-        <div className="kpi-card">
-          <div style={{display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'0.5rem'}}>
-            <span className={`status-dot ${!loading && status?.status === 'healthy' ? 'status-ok' : 'status-err'}`}></span>
-            <span style={{fontSize:'1.1rem', fontWeight:700}}>API Status</span>
-          </div>
-          <div className="kpi-value" style={{fontSize:'1.2rem', color: !loading && status?.status === 'healthy' ? '#22c55e' : '#ef4444'}}>
-            {loading ? 'Chargement...' : status?.status === 'healthy' ? 'Opérationnel' : 'Erreur'}
-          </div>
-        </div>
-        <div className="kpi-card">
-          <div style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'0.5rem'}}>Modèle ML</div>
-          <div className="kpi-value" style={{fontSize:'1.2rem', color: status?.model_loaded ? '#22c55e' : '#f59e0b'}}>
-            {loading ? '...' : status?.model_loaded ? 'Chargé' : 'Mode démo'}
-          </div>
-        </div>
-        <div className="kpi-card">
-          <div style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'0.5rem'}}>Version API</div>
-          <div className="kpi-value" style={{fontSize:'1.2rem'}}>v1.0.0</div>
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="card-title">Infrastructure Azure</div>
-        <div className="grid-2">
-          {infos.map((info, i) => (
-            <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'0.6rem 0', borderBottom:'1px solid #1e3a5f', fontSize:'0.9rem'}}>
-              <span style={{color:'#64748b'}}>{info.label}</span>
-              <span style={{color:'#38bdf8', fontWeight:600}}>{info.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="card-title">Endpoints API publics</div>
-        {[
-          { method: 'GET', path: '/health', desc: 'Statut de l\'API' },
-          { method: 'POST', path: '/predict', desc: 'Prédiction consommation' },
-          { method: 'GET', path: '/metrics', desc: 'Métriques système' },
-          { method: 'GET', path: '/docs', desc: 'Documentation Swagger' },
-        ].map((e, i) => (
-          <div key={i} style={{display:'flex', alignItems:'center', gap:'1rem', padding:'0.6rem 0', borderBottom:'1px solid #1e3a5f', fontSize:'0.9rem'}}>
-            <span className={`badge ${e.method === 'POST' ? 'badge-blue' : 'badge-green'}`}>{e.method}</span>
-            <span style={{fontFamily:'monospace', color:'#38bdf8'}}>{e.path}</span>
-            <span style={{color:'#64748b'}}>{e.desc}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function App() {
-  const [page, setPage] = useState('prediction');
-  return (
     <div>
-      <Navbar page={page} setPage={setPage} />
-      {page === 'prediction' && <PredictionPage />}
-      {page === 'statistiques' && <StatistiquesPage />}
-      {page === 'monitoring' && <MonitoringPage />}
+      <div class="brand-name">SmartNetEnergy</div>
+      <div class="brand-sub">5G Energy Intelligence Platform</div>
     </div>
-  );
+  </div>
+  <div class="topbar-right">
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    <div class="time-display" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-item active" onclick="nav('prediction',this)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    PREDICTION
+  </div>
+  <div class="nav-item" onclick="nav('statistics',this)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    STATISTICS
+  </div>
+  <div class="nav-item" onclick="nav('alerts',this)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    ALERTS
+  </div>
+  <div class="nav-item" onclick="nav('monitoring',this)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    MONITORING
+  </div>
+</nav>
+
+<div id="prediction" class="page active">
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Total predictions</div>
+      <div class="kpi-val" id="kpi-count">0</div>
+      <div class="kpi-sub">This session</div>
+    </div>
+    <div class="kpi success">
+      <div class="kpi-label">API status</div>
+      <div class="kpi-val" style="font-size:16px;padding-top:6px">ONLINE</div>
+      <div class="kpi-sub">Azure Container Apps</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">Model status</div>
+      <div class="kpi-val" style="font-size:16px;padding-top:6px">DEMO</div>
+      <div class="kpi-sub">Awaiting ML model</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Last result</div>
+      <div class="kpi-val" id="kpi-last">—</div>
+      <div class="kpi-sub">watts</div>
+    </div>
+  </div>
+
+  <div class="grid-65">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Tower parameters</span>
+        <span class="badge badge-blue">5G NR</span>
+      </div>
+      <div class="form-grid" style="margin-bottom:12px">
+        <div class="fg"><label>Traffic load (Mbps)</label><input type="number" id="f_tl" value="1200"></div>
+        <div class="fg"><label>Antenna count</label><input type="number" id="f_ac" value="64"></div>
+        <div class="fg"><label>Bandwidth (MHz)</label><input type="number" id="f_bw" value="100"></div>
+        <div class="fg"><label>TX Power (dBm)</label><input type="number" id="f_tp" value="43"></div>
+        <div class="fg"><label>Frequency (MHz)</label><input type="number" id="f_fr" value="3500"></div>
+        <div class="fg"><label>ESMode active (0-6)</label><input type="number" id="f_es" value="2" min="0" max="6"></div>
+      </div>
+      <div class="slider-wrap">
+        <label>Traffic load intensity <span id="tl-out">1200</span> Mbps</label>
+        <input type="range" min="0" max="5000" step="100" value="1200" oninput="document.getElementById('tl-out').textContent=this.value;document.getElementById('f_tl').value=this.value">
+      </div>
+      <div class="slider-wrap">
+        <label>ESMode efficiency <span id="es-out">2</span> / 6</label>
+        <input type="range" min="0" max="6" step="1" value="2" oninput="document.getElementById('es-out').textContent=this.value;document.getElementById('f_es').value=this.value">
+      </div>
+      <button class="predict-btn" id="pbtn" onclick="predict()">PREDICT ENERGY CONSUMPTION</button>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Prediction result</span></div>
+        <div class="result-display" id="rdisplay">
+          <div class="result-num" id="rnum">—</div>
+          <div class="result-unit">WATTS</div>
+          <div class="result-status" id="rstatus" style="color:var(--muted)">Enter parameters and run prediction</div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="progress-item">
+            <div class="progress-top"><span class="pl">Energy level</span><span class="pv" id="epct">0%</span></div>
+            <div class="progress-bg"><div class="progress-fill" id="ebar" style="width:0%;background:var(--accent)"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-top"><span class="pl">ESMode saving</span><span class="pv" id="espct">0%</span></div>
+            <div class="progress-bg"><div class="progress-fill" id="esbar" style="width:0%;background:var(--success)"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-top"><span class="pl">Load factor</span><span class="pv" id="lpct">0%</span></div>
+            <div class="progress-bg"><div class="progress-fill" id="lbar" style="width:0%;background:var(--accent2)"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">History</span><span class="badge badge-blue" id="hcount">0 entries</span></div>
+        <div id="hist"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="statistics" class="page">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Avg consumption</div><div class="kpi-val">510W</div><div class="kpi-sub">All towers</div></div>
+    <div class="kpi danger"><div class="kpi-label">Peak consumption</div><div class="kpi-val">890W</div><div class="kpi-sub">Tower F</div></div>
+    <div class="kpi success"><div class="kpi-label">Min consumption</div><div class="kpi-val">180W</div><div class="kpi-sub">Tower A</div></div>
+    <div class="kpi"><div class="kpi-label">ESMode savings</div><div class="kpi-val">23%</div><div class="kpi-sub">vs baseline</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Energy by tower</span><span class="badge badge-blue">6 towers</span></div>
+      <canvas id="chart-towers"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Load vs energy</span><span class="badge badge-green">correlation</span></div>
+      <canvas id="chart-corr"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Tower breakdown</span></div>
+    <div id="tower-table"></div>
+  </div>
+</div>
+
+<div id="alerts" class="page">
+  <div class="grid-3">
+    <div class="kpi danger"><div class="kpi-label">Critical</div><div class="kpi-val">2</div><div class="kpi-sub">Immediate action</div></div>
+    <div class="kpi warn"><div class="kpi-label">Warning</div><div class="kpi-val">3</div><div class="kpi-sub">Monitor closely</div></div>
+    <div class="kpi success"><div class="kpi-label">Info</div><div class="kpi-val">5</div><div class="kpi-sub">Normal operations</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Alert feed</span><span class="badge badge-danger">2 CRITICAL</span></div>
+    <div id="alert-list"></div>
+  </div>
+</div>
+
+<div id="monitoring" class="page">
+  <div class="kpi-grid">
+    <div class="kpi success"><div class="kpi-label">API uptime</div><div class="kpi-val">99.9%</div><div class="kpi-sub">30 days</div></div>
+    <div class="kpi"><div class="kpi-label">Avg latency</div><div class="kpi-val">187ms</div><div class="kpi-sub">/predict endpoint</div></div>
+    <div class="kpi"><div class="kpi-label">Docker</div><div class="kpi-val" style="font-size:16px;padding-top:6px">v1-latest</div><div class="kpi-sub">smartnetenergycr</div></div>
+    <div class="kpi warn"><div class="kpi-label">ML model</div><div class="kpi-val" style="font-size:16px;padding-top:6px">DEMO</div><div class="kpi-sub">Push .pkl to activate</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Azure infrastructure</span><span class="badge badge-green">ALL HEALTHY</span></div>
+      <div class="infra-row"><span class="infra-key">Resource Group</span><span class="infra-val infra-ok">rg-smartnetenergy</span></div>
+      <div class="infra-row"><span class="infra-key">Region</span><span class="infra-val">germanywestcentral</span></div>
+      <div class="infra-row"><span class="infra-key">Data Lake</span><span class="infra-val infra-ok">smartnetenergydl</span></div>
+      <div class="infra-row"><span class="infra-key">ML Workspace</span><span class="infra-val infra-ok">aml-smartnetenergy</span></div>
+      <div class="infra-row"><span class="infra-key">Container Registry</span><span class="infra-val infra-ok">smartnetenergycr</span></div>
+      <div class="infra-row"><span class="infra-key">Container Apps</span><span class="infra-val infra-ok">3 running</span></div>
+      <div class="infra-row"><span class="infra-key">Key Vault</span><span class="infra-val infra-ok">amlsmartkeyvault</span></div>
+      <div class="infra-row"><span class="infra-key">IaC</span><span class="infra-val">Terraform 3.x</span></div>
+      <div class="infra-row"><span class="infra-key">CI/CD</span><span class="infra-val infra-ok">GitHub Actions</span></div>
+      <div class="infra-row"><span class="infra-key">Budget</span><span class="infra-val" style="color:var(--warn)">65$ / 100$</span></div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">API endpoints</span></div>
+        <div class="endpoint-row"><span class="method-badge method-get">GET</span><span class="ep-path">/health</span><span class="ep-desc">Health check</span></div>
+        <div class="endpoint-row"><span class="method-badge method-post">POST</span><span class="ep-path">/predict</span><span class="ep-desc">Energy prediction</span></div>
+        <div class="endpoint-row"><span class="method-badge method-get">GET</span><span class="ep-path">/metrics</span><span class="ep-desc">API metrics</span></div>
+        <div class="endpoint-row"><span class="method-badge method-get">GET</span><span class="ep-path">/docs</span><span class="ep-desc">Swagger UI</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Data Lake — raw/</span></div>
+        <div class="infra-row"><span class="infra-key">BSinfo.csv</span><span class="infra-val">56 KB</span></div>
+        <div class="infra-row"><span class="infra-key">CLdata.csv</span><span class="infra-val">6.2 MB</span></div>
+        <div class="infra-row"><span class="infra-key">ECdata.csv</span><span class="infra-val">3.0 MB</span></div>
+        <div class="infra-row"><span class="infra-key">power_consumption_estimation.csv</span><span class="infra-val">781 KB</span></div>
+        <div class="infra-row"><span class="infra-key">power_consumption_prediction.csv</span><span class="infra-val">653 KB</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "https://smartnetenergy-api.gentlesmoke-2dbdff9e.germanywestcentral.azurecontainerapps.io";
+let pCount = 0, history = [];
+
+function nav(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  if(id === 'statistics') initCharts();
+  if(id === 'alerts') initAlerts();
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+async function predict() {
+  const btn = document.getElementById('pbtn');
+  btn.disabled = true; btn.textContent = 'COMPUTING...';
+  const body = {
+    traffic_load: +document.getElementById('f_tl').value,
+    antenna_count: +document.getElementById('f_ac').value,
+    bandwidth: +document.getElementById('f_bw').value,
+    tx_power: +document.getElementById('f_tp').value,
+    frequency: +document.getElementById('f_fr').value,
+    esmode_sum: +document.getElementById('f_es').value
+  };
+  try {
+    const r = await fetch(API+'/predict', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d = await r.json();
+    const v = d.energy_prediction;
+    const vf = v.toFixed(1);
+    document.getElementById('rnum').textContent = vf;
+    const isHigh = v > 700, isMed = v > 400;
+    const col = isHigh ? 'var(--danger)' : isMed ? 'var(--warn)' : 'var(--success)';
+    document.getElementById('rnum').style.color = col;
+    document.getElementById('rdisplay').style.borderColor = col;
+    const st = document.getElementById('rstatus');
+    st.textContent = isHigh ? 'CRITICAL — High energy consumption detected' : isMed ? 'MODERATE — Normal operating range' : 'EFFICIENT — Energy saving active';
+    st.style.background = isHigh ? 'rgba(255,71,87,0.1)' : isMed ? 'rgba(255,165,2,0.1)' : 'rgba(46,213,115,0.1)';
+    st.style.color = col;
+    const ep = Math.min(100, Math.round((v/1000)*100));
+    document.getElementById('ebar').style.width = ep+'%';
+    document.getElementById('ebar').style.background = isHigh ? 'var(--danger)' : isMed ? 'var(--warn)' : 'var(--accent)';
+    document.getElementById('epct').textContent = ep+'%';
+    const esp = Math.round((body.esmode_sum/6)*100);
+    document.getElementById('esbar').style.width = esp+'%';
+    document.getElementById('espct').textContent = esp+'%';
+    const lp = Math.min(100, Math.round((body.traffic_load/5000)*100));
+    document.getElementById('lbar').style.width = lp+'%';
+    document.getElementById('lpct').textContent = lp+'%';
+    pCount++;
+    document.getElementById('kpi-count').textContent = pCount;
+    document.getElementById('kpi-last').textContent = Math.round(v);
+    history.unshift({t:new Date().toLocaleTimeString(),load:body.traffic_load,ant:body.antenna_count,v:vf});
+    if(history.length > 6) history.pop();
+    renderHistory();
+  } catch(e) {
+    document.getElementById('rnum').textContent = 'ERR';
+  }
+  btn.disabled = false; btn.textContent = 'PREDICT ENERGY CONSUMPTION';
+}
+
+function renderHistory() {
+  const el = document.getElementById('hist');
+  document.getElementById('hcount').textContent = history.length+' entries';
+  if(!history.length){el.innerHTML='<div class="empty-state">No predictions yet</div>';return;}
+  el.innerHTML = history.map(h=>`
+    <div class="hist-item">
+      <span class="hist-time">${h.t}</span>
+      <span class="hist-params">L:${h.load} A:${h.ant}</span>
+      <span class="hist-val">${h.v} W</span>
+    </div>`).join('');
+}
+
+function initCharts() {
+  const towers = [{n:'A',e:180},{n:'B',e:310},{n:'C',e:420},{n:'D',e:540},{n:'E',e:720},{n:'F',e:890}];
+  const loads =  [200,500,800,1200,1800,2400];
+  const colors = towers.map(t => t.e>700?'#ff4757':t.e>500?'#ffa502':'#2ed573');
+
+  const c1 = document.getElementById('chart-towers');
+  const c2 = document.getElementById('chart-corr');
+  if(c1._chart) c1._chart.destroy();
+  if(c2._chart) c2._chart.destroy();
+
+  c1._chart = new Chart(c1, {type:'bar',data:{
+    labels: towers.map(t=>'Tower '+t.n),
+    datasets:[{label:'Energy (W)',data:towers.map(t=>t.e),backgroundColor:colors,borderRadius:4,borderSkipped:false}]
+  },options:{plugins:{legend:{display:false}},scales:{
+    x:{ticks:{color:'#3a6070',font:{size:10}},grid:{color:'#0e2028'}},
+    y:{ticks:{color:'#3a6070',font:{size:10}},grid:{color:'#0e2028'}}
+  }}});
+
+  c2._chart = new Chart(c2, {type:'line',data:{
+    labels: loads.map(l=>l+' Mbps'),
+    datasets:[{label:'Energy (W)',data:towers.map(t=>t.e),borderColor:'#00d4ff',backgroundColor:'rgba(0,212,255,0.05)',tension:0.4,fill:true,pointBackgroundColor:'#00d4ff',pointRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{
+    x:{ticks:{color:'#3a6070',font:{size:10}},grid:{color:'#0e2028'}},
+    y:{ticks:{color:'#3a6070',font:{size:10}},grid:{color:'#0e2028'}}
+  }}});
+
+  const tbl = document.getElementById('tower-table');
+  tbl.innerHTML = towers.map((t,i)=>`
+    <div class="tower-row">
+      <span class="tower-id">Tower ${t.n}</span>
+      <div class="tower-bar-wrap">
+        <div class="tower-bar-bg"><div class="tower-bar-fill" style="width:${Math.round((t.e/890)*100)}%;background:${colors[i]};height:6px;border-radius:3px"></div></div>
+      </div>
+      <span class="tower-energy" style="color:${colors[i]}">${t.e} W</span>
+      <span class="tower-status"><span class="badge ${t.e>700?'badge-danger':t.e>500?'badge-warn':'badge-green'}">${t.e>700?'CRITICAL':t.e>500?'WARNING':'NORMAL'}</span></span>
+    </div>`).join('');
+}
+
+function initAlerts() {
+  const alerts = [
+    {lvl:'danger',icon:'⚡',title:'Tower F — Critical overconsumption (890W)',desc:'Threshold exceeded by 11%. ESMode inactive. Immediate intervention required.',time:'2 min ago',tag:'ENERGY'},
+    {lvl:'danger',icon:'⚡',title:'Tower E — High load period (720W)',desc:'Peak traffic detected. Consider activating ESMode 4-6.',time:'5 min ago',tag:'ENERGY'},
+    {lvl:'warn',icon:'⚠',title:'ML model not loaded — demo mode active',desc:'Push models/energy_model.pkl to GitHub to activate real ML predictions.',time:'15 min ago',tag:'MODEL'},
+    {lvl:'warn',icon:'⚠',title:'Tower D — Traffic surge +35%',desc:'Traffic load increased significantly in the last hour.',time:'22 min ago',tag:'LOAD'},
+    {lvl:'warn',icon:'⚠',title:'Azure budget — 65% consumed',desc:'Monthly spend at 65$/100$. FinOps alert threshold: 80$.',time:'1h ago',tag:'COST'},
+    {lvl:'info',icon:'✓',title:'CI/CD pipeline — Deployment successful',desc:'GitHub Actions completed in 2m 27s. All 4 jobs passed.',time:'3h ago',tag:'DEVOPS'},
+    {lvl:'info',icon:'✓',title:'Data Lake — Upload complete',desc:'5 CSV files uploaded to raw/. Total: 10.7 MB.',time:'4h ago',tag:'DATA'},
+  ];
+  const cols = {danger:'var(--danger)',warn:'var(--warn)',info:'var(--success)'};
+  const bgs = {danger:'rgba(255,71,87,0.1)',warn:'rgba(255,165,2,0.1)',info:'rgba(46,213,115,0.1)'};
+  document.getElementById('alert-list').innerHTML = alerts.map(a=>`
+    <div class="alert-row">
+      <div class="alert-icon-wrap" style="background:${bgs[a.lvl]};color:${cols[a.lvl]}">${a.icon}</div>
+      <div class="alert-body">
+        <div class="alert-title" style="color:${cols[a.lvl]}">${a.title}</div>
+        <div class="alert-desc">${a.desc}</div>
+        <div class="alert-meta">
+          <span>${a.time}</span>
+          <span class="badge" style="background:${bgs[a.lvl]};color:${cols[a.lvl]};border:1px solid ${cols[a.lvl]}30">${a.tag}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+setInterval(()=>{
+  const n = new Date();
+  document.getElementById('clock').textContent = n.toUTCString().slice(17,25)+' UTC';
+},1000);
+renderHistory();
 </script>
 </body>
 </html>
