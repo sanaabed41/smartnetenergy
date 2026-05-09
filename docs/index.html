@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartNetEnergy — 5G Dashboard</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; }
+    .nav { background: #1e293b; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+    .nav-title { font-size: 1.4rem; font-weight: 700; color: #38bdf8; }
+    .nav-links { display: flex; gap: 1rem; }
+    .nav-link { padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; color: #94a3b8; border: none; background: none; font-size: 0.95rem; }
+    .nav-link.active { background: #0ea5e9; color: white; }
+    .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+    .card { background: #1e293b; border-radius: 12px; padding: 1.5rem; border: 1px solid #334155; margin-bottom: 1.5rem; }
+    .card-title { font-size: 1.1rem; font-weight: 600; color: #38bdf8; margin-bottom: 1rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.4rem; }
+    .form-input { width: 100%; padding: 0.6rem 1rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: 0.95rem; }
+    .form-input:focus { outline: none; border-color: #0ea5e9; }
+    .btn { padding: 0.7rem 2rem; background: #0ea5e9; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; width: 100%; margin-top: 0.5rem; }
+    .btn:hover { background: #0284c7; }
+    .btn:disabled { background: #334155; cursor: not-allowed; }
+    .result-box { background: #0f172a; border-radius: 10px; padding: 1.5rem; text-align: center; border: 1px solid #0ea5e9; margin-top: 1rem; }
+    .result-value { font-size: 3rem; font-weight: 800; color: #38bdf8; }
+    .result-unit { font-size: 1rem; color: #94a3b8; margin-top: 0.3rem; }
+    .kpi-card { background: #0f172a; border-radius: 10px; padding: 1.2rem; text-align: center; border: 1px solid #334155; }
+    .kpi-value { font-size: 1.8rem; font-weight: 700; color: #38bdf8; }
+    .kpi-label { font-size: 0.8rem; color: #64748b; margin-top: 0.3rem; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .status-ok { background: #22c55e; }
+    .status-err { background: #ef4444; }
+    .badge { padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .badge-green { background: #166534; color: #86efac; }
+    .badge-blue { background: #1e3a5f; color: #93c5fd; }
+    .loading { text-align: center; padding: 2rem; color: #64748b; }
+    canvas { max-height: 280px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const API_URL = "https://smartnetenergy-api.gentlesmoke-2dbdff9e.germanywestcentral.azurecontainerapps.io";
+
+const { useState, useEffect, useRef } = React;
+
+function Navbar({ page, setPage }) {
+  return (
+    <nav className="nav">
+      <div className="nav-title">SmartNetEnergy 5G</div>
+      <div className="nav-links">
+        {['prediction', 'statistiques', 'monitoring'].map(p => (
+          <button key={p} className={`nav-link ${page === p ? 'active' : ''}`} onClick={() => setPage(p)}>
+            {p.charAt(0).toUpperCase() + p.slice(1)}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+function PredictionPage() {
+  const [form, setForm] = useState({
+    traffic_load: 1200, antenna_count: 64, bandwidth: 100,
+    tx_power: 43, frequency: 3500, esmode_sum: 2
+  });
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState([]);
+
+  const predict = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/predict`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      const data = await res.json();
+      setResult(data.energy_prediction);
+      setHistory(prev => [{...form, result: data.energy_prediction, time: new Date().toLocaleTimeString()}, ...prev.slice(0,4)]);
+    } catch(e) {
+      setResult('Erreur API');
+    }
+    setLoading(false);
+  };
+
+  const fields = [
+    { key: 'traffic_load', label: 'Trafic (Mbps)', min: 0, max: 10000 },
+    { key: 'antenna_count', label: 'Nombre antennes', min: 1, max: 256 },
+    { key: 'bandwidth', label: 'Bande passante (MHz)', min: 10, max: 400 },
+    { key: 'tx_power', label: 'Puissance TX (dBm)', min: 0, max: 60 },
+    { key: 'frequency', label: 'Fréquence (MHz)', min: 700, max: 6000 },
+    { key: 'esmode_sum', label: 'ESMode actifs (0-6)', min: 0, max: 6 },
+  ];
+
+  return (
+    <div className="container">
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-title">Paramètres de la tour 5G</div>
+          {fields.map(f => (
+            <div className="form-group" key={f.key}>
+              <label className="form-label">{f.label}</label>
+              <input className="form-input" type="number" min={f.min} max={f.max}
+                value={form[f.key]} onChange={e => setForm({...form, [f.key]: parseFloat(e.target.value)})} />
+            </div>
+          ))}
+          <button className="btn" onClick={predict} disabled={loading}>
+            {loading ? 'Calcul en cours...' : 'Prédire la consommation'}
+          </button>
+        </div>
+        <div>
+          <div className="card">
+            <div className="card-title">Résultat de la prédiction</div>
+            {result !== null ? (
+              <div className="result-box">
+                <div className="result-value">{typeof result === 'number' ? result.toFixed(1) : result}</div>
+                <div className="result-unit">watts consommés</div>
+                <div style={{marginTop:'1rem', fontSize:'0.85rem', color:'#64748b'}}>
+                  Équivalent : {typeof result === 'number' ? (result/1000).toFixed(3) : '-'} kW
+                </div>
+              </div>
+            ) : (
+              <div className="loading">Renseignez les paramètres et lancez la prédiction</div>
+            )}
+          </div>
+          <div className="card">
+            <div className="card-title">Historique des prédictions</div>
+            {history.length === 0 ? (
+              <div className="loading">Aucune prédiction effectuée</div>
+            ) : history.map((h, i) => (
+              <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'0.5rem 0', borderBottom:'1px solid #334155', fontSize:'0.9rem'}}>
+                <span style={{color:'#94a3b8'}}>{h.time}</span>
+                <span>Load: {h.traffic_load} | Ant: {h.antenna_count}</span>
+                <span style={{color:'#38bdf8', fontWeight:700}}>{h.result.toFixed(1)} W</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatistiquesPage() {
+  const chartRef = useRef(null);
+  const chart2Ref = useRef(null);
+  const chartInstance = useRef(null);
+  const chart2Instance = useRef(null);
+
+  const scenarios = [
+    { tower: 'Tour A', load: 200, energy: 180 },
+    { tower: 'Tour B', load: 500, energy: 310 },
+    { tower: 'Tour C', load: 800, energy: 420 },
+    { tower: 'Tour D', load: 1200, energy: 540 },
+    { tower: 'Tour E', load: 1800, energy: 720 },
+    { tower: 'Tour F', load: 2400, energy: 890 },
+  ];
+
+  const kpis = [
+    { label: 'Consommation moyenne', value: '510 W' },
+    { label: 'Consommation max', value: '890 W' },
+    { label: 'Consommation min', value: '180 W' },
+    { label: 'Tours analysées', value: '6' },
+  ];
+
+  useEffect(() => {
+    if (chartInstance.current) chartInstance.current.destroy();
+    if (chart2Instance.current) chart2Instance.current.destroy();
+
+    chartInstance.current = new Chart(chartRef.current, {
+      type: 'bar',
+      data: {
+        labels: scenarios.map(s => s.tower),
+        datasets: [{
+          label: 'Consommation (W)',
+          data: scenarios.map(s => s.energy),
+          backgroundColor: '#0ea5e9',
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        plugins: { legend: { labels: { color: '#94a3b8' } } },
+        scales: {
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+          y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+        }
+      }
+    });
+
+    chart2Instance.current = new Chart(chart2Ref.current, {
+      type: 'line',
+      data: {
+        labels: scenarios.map(s => s.load + ' Mbps'),
+        datasets: [{
+          label: 'Énergie vs Trafic',
+          data: scenarios.map(s => s.energy),
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(14,165,233,0.1)',
+          tension: 0.4,
+          fill: true,
+          pointBackgroundColor: '#0ea5e9',
+        }]
+      },
+      options: {
+        plugins: { legend: { labels: { color: '#94a3b8' } } },
+        scales: {
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+          y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+        }
+      }
+    });
+
+    return () => {
+      if (chartInstance.current) chartInstance.current.destroy();
+      if (chart2Instance.current) chart2Instance.current.destroy();
+    };
+  }, []);
+
+  return (
+    <div className="container">
+      <div className="grid-4" style={{marginBottom:'1.5rem'}}>
+        {kpis.map((k, i) => (
+          <div className="kpi-card" key={i}>
+            <div className="kpi-value">{k.value}</div>
+            <div className="kpi-label">{k.label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-title">Consommation par tour 5G</div>
+          <canvas ref={chartRef}></canvas>
+        </div>
+        <div className="card">
+          <div className="card-title">Trafic vs Consommation</div>
+          <canvas ref={chart2Ref}></canvas>
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-title">Détail des tours</div>
+        <table style={{width:'100%', borderCollapse:'collapse', fontSize:'0.9rem'}}>
+          <thead>
+            <tr style={{borderBottom:'1px solid #334155', color:'#64748b'}}>
+              <th style={{padding:'0.6rem', textAlign:'left'}}>Tour</th>
+              <th style={{padding:'0.6rem', textAlign:'left'}}>Trafic (Mbps)</th>
+              <th style={{padding:'0.6rem', textAlign:'left'}}>Énergie (W)</th>
+              <th style={{padding:'0.6rem', textAlign:'left'}}>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            {scenarios.map((s, i) => (
+              <tr key={i} style={{borderBottom:'1px solid #1e3a5f'}}>
+                <td style={{padding:'0.6rem', fontWeight:600}}>{s.tower}</td>
+                <td style={{padding:'0.6rem', color:'#94a3b8'}}>{s.load}</td>
+                <td style={{padding:'0.6rem', color:'#38bdf8', fontWeight:700}}>{s.energy} W</td>
+                <td style={{padding:'0.6rem'}}>
+                  <span className={`badge ${s.energy > 700 ? 'badge-blue' : 'badge-green'}`}>
+                    {s.energy > 700 ? 'Élevée' : 'Normale'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function MonitoringPage() {
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_URL}/health`)
+      .then(r => r.json())
+      .then(d => { setStatus(d); setLoading(false); })
+      .catch(() => { setStatus({ status: 'error', model_loaded: false }); setLoading(false); });
+  }, []);
+
+  const infos = [
+    { label: 'Resource Group', value: 'rg-smartnetenergy' },
+    { label: 'Région Azure', value: 'Germany West Central' },
+    { label: 'Container App', value: 'smartnetenergy-api' },
+    { label: 'Container Registry', value: 'smartnetenergycr.azurecr.io' },
+    { label: 'ML Workspace', value: 'aml-smartnetenergy' },
+    { label: 'Data Lake', value: 'smartnetenergydl' },
+    { label: 'CI/CD', value: 'GitHub Actions' },
+    { label: 'IaC', value: 'Terraform ~3.0' },
+  ];
+
+  return (
+    <div className="container">
+      <div className="grid-3" style={{marginBottom:'1.5rem'}}>
+        <div className="kpi-card">
+          <div style={{display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'0.5rem'}}>
+            <span className={`status-dot ${!loading && status?.status === 'healthy' ? 'status-ok' : 'status-err'}`}></span>
+            <span style={{fontSize:'1.1rem', fontWeight:700}}>API Status</span>
+          </div>
+          <div className="kpi-value" style={{fontSize:'1.2rem', color: !loading && status?.status === 'healthy' ? '#22c55e' : '#ef4444'}}>
+            {loading ? 'Chargement...' : status?.status === 'healthy' ? 'Opérationnel' : 'Erreur'}
+          </div>
+        </div>
+        <div className="kpi-card">
+          <div style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'0.5rem'}}>Modèle ML</div>
+          <div className="kpi-value" style={{fontSize:'1.2rem', color: status?.model_loaded ? '#22c55e' : '#f59e0b'}}>
+            {loading ? '...' : status?.model_loaded ? 'Chargé' : 'Mode démo'}
+          </div>
+        </div>
+        <div className="kpi-card">
+          <div style={{fontSize:'1.1rem', fontWeight:700, marginBottom:'0.5rem'}}>Version API</div>
+          <div className="kpi-value" style={{fontSize:'1.2rem'}}>v1.0.0</div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title">Infrastructure Azure</div>
+        <div className="grid-2">
+          {infos.map((info, i) => (
+            <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'0.6rem 0', borderBottom:'1px solid #1e3a5f', fontSize:'0.9rem'}}>
+              <span style={{color:'#64748b'}}>{info.label}</span>
+              <span style={{color:'#38bdf8', fontWeight:600}}>{info.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title">Endpoints API publics</div>
+        {[
+          { method: 'GET', path: '/health', desc: 'Statut de l\'API' },
+          { method: 'POST', path: '/predict', desc: 'Prédiction consommation' },
+          { method: 'GET', path: '/metrics', desc: 'Métriques système' },
+          { method: 'GET', path: '/docs', desc: 'Documentation Swagger' },
+        ].map((e, i) => (
+          <div key={i} style={{display:'flex', alignItems:'center', gap:'1rem', padding:'0.6rem 0', borderBottom:'1px solid #1e3a5f', fontSize:'0.9rem'}}>
+            <span className={`badge ${e.method === 'POST' ? 'badge-blue' : 'badge-green'}`}>{e.method}</span>
+            <span style={{fontFamily:'monospace', color:'#38bdf8'}}>{e.path}</span>
+            <span style={{color:'#64748b'}}>{e.desc}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [page, setPage] = useState('prediction');
+  return (
+    <div>
+      <Navbar page={page} setPage={setPage} />
+      {page === 'prediction' && <PredictionPage />}
+      {page === 'statistiques' && <StatistiquesPage />}
+      {page === 'monitoring' && <MonitoringPage />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
