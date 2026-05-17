@@ -3,147 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNetEnergy — 5G Tower Map Tunisia</title>
+<title>SmartNetEnergy — 5G Tower Intelligence Platform</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#04080a;--surface:#080f12;--card:#0b1519;--border:#0e2028;
-  --accent:#00d4ff;--success:#2ed573;--warn:#ffa502;--danger:#ff4757;
-  --text:#c8dde8;--muted:#3a6070;--dim:#1a3040;
+  --bg:#f0f4f8;
+  --surface:#ffffff;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --border2:#cbd5e1;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-light:#e0f2fe;
+  --success:#16a34a;
+  --success-bg:#dcfce7;
+  --warn:#d97706;
+  --warn-bg:#fef3c7;
+  --danger:#dc2626;
+  --danger-bg:#fee2e2;
+  --text:#0f172a;
+  --text2:#334155;
+  --muted:#64748b;
+  --dim:#94a3b8;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px rgba(0,0,0,0.08),0 4px 6px rgba(0,0,0,0.04);
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* TOPBAR */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;z-index:1000}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:56px;flex-shrink:0;box-shadow:var(--shadow)}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-icon{width:30px;height:30px;background:var(--dim);border:1px solid var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center}
-.brand-icon svg{width:16px;height:16px;fill:var(--accent)}
-.brand-name{font-size:14px;font-weight:600;color:var(--accent);letter-spacing:2px}
-.brand-sub{font-size:9px;color:var(--muted);letter-spacing:1px}
-.topbar-right{display:flex;align-items:center;gap:14px}
-.live-badge{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--success);letter-spacing:1px}
+.brand-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(14,165,233,0.3)}
+.brand-icon svg{width:18px;height:18px;fill:white}
+.brand-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:0.3px}
+.topbar-right{display:flex;align-items:center;gap:20px}
+.kpi-mini{text-align:center;padding:6px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border)}
+.kpi-mini-val{font-size:17px;font-weight:700;color:var(--text);font-family:'Courier New',monospace;line-height:1}
+.kpi-mini-label{font-size:9px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:2px}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--success);font-weight:600;letter-spacing:0.5px;background:var(--success-bg);padding:5px 10px;border-radius:20px;border:1px solid #86efac}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.kpi-mini{text-align:center}
-.kpi-mini-val{font-size:16px;font-weight:700;color:var(--accent);font-family:'Courier New',monospace;line-height:1}
-.kpi-mini-label{font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-.time-display{font-family:'Courier New',monospace;font-size:11px;color:var(--muted)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+.time-display{font-family:'Courier New',monospace;font-size:12px;color:var(--muted);background:var(--bg);padding:5px 10px;border-radius:6px;border:1px solid var(--border)}
 
 /* NAV */
-.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 20px;flex-shrink:0}
-.nav-item{padding:10px 16px;font-size:10px;letter-spacing:1.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px}
+.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 24px;flex-shrink:0}
+.nav-item{padding:12px 18px;font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;transition:all 0.2s}
 .nav-item:hover{color:var(--text)}
 .nav-item.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-/* MAIN LAYOUT */
+/* LAYOUT */
 .main{display:flex;flex:1;overflow:hidden}
 
 /* SIDEBAR */
-.sidebar{width:320px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
-.sidebar-header{padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
-.sidebar-title{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.search-box{width:100%;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;outline:none}
-.search-box:focus{border-color:var(--accent)}
-.filter-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.filter-btn{padding:3px 10px;border-radius:20px;font-size:9px;cursor:pointer;border:1px solid var(--border);background:var(--dim);color:var(--muted);letter-spacing:0.5px}
-.filter-btn.active{background:rgba(0,212,255,0.1);color:var(--accent);border-color:var(--accent)}
-.filter-btn.warn{border-color:var(--warn);color:var(--warn);background:rgba(255,165,2,0.1)}
-.filter-btn.danger{border-color:var(--danger);color:var(--danger);background:rgba(255,71,87,0.1)}
-.filter-btn.success{border-color:var(--success);color:var(--success);background:rgba(46,213,115,0.1)}
-.tower-list{flex:1;overflow-y:auto;padding:8px}
+.sidebar{width:300px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow)}
+.sidebar-header{padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+.sidebar-title{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.search-box{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;transition:border-color 0.2s;box-shadow:var(--shadow)}
+.search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(14,165,233,0.1)}
+.filter-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.filter-btn{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--muted);letter-spacing:0.3px;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filter-btn.active{background:var(--accent-light);color:var(--accent-dark);border-color:var(--accent)}
+.filter-btn.fdanger{background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
+.filter-btn.fwarn{background:var(--warn-bg);color:var(--warn);border-color:#fcd34d}
+.filter-btn.fsuccess{background:var(--success-bg);color:var(--success);border-color:#86efac}
+.tower-list{flex:1;overflow-y:auto;padding:10px}
 .tower-list::-webkit-scrollbar{width:4px}
 .tower-list::-webkit-scrollbar-track{background:var(--bg)}
-.tower-list::-webkit-scrollbar-thumb{background:var(--dim)}
-.tower-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:border-color 0.2s}
-.tower-card:hover{border-color:var(--accent)}
-.tower-card.selected{border-color:var(--accent);background:rgba(0,212,255,0.05)}
-.tower-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.tower-id{font-family:'Courier New',monospace;font-size:12px;color:var(--accent);font-weight:600}
-.tower-energy-badge{font-size:10px;font-family:'Courier New',monospace;font-weight:600}
-.tower-card-info{display:flex;gap:8px;flex-wrap:wrap}
-.tower-tag{font-size:9px;color:var(--muted);background:var(--dim);padding:2px 6px;border-radius:4px}
-.tower-bar-bg{height:3px;background:var(--dim);border-radius:2px;margin-top:6px}
-.tower-bar-fill{height:100%;border-radius:2px}
+.tower-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.tower-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow)}
+.tower-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.tower-card.selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 3px rgba(14,165,233,0.1)}
+.tower-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.tower-id{font-family:'Courier New',monospace;font-size:12px;color:var(--accent-dark);font-weight:700}
+.tower-energy-badge{font-size:11px;font-family:'Courier New',monospace;font-weight:700}
+.tower-card-info{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tower-tag{font-size:9px;color:var(--muted);background:var(--bg);padding:2px 8px;border-radius:20px;border:1px solid var(--border);font-weight:500}
+.tower-bar-bg{height:3px;background:var(--bg);border-radius:2px}
+.tower-bar-fill{height:100%;border-radius:2px;transition:width 0.3s}
 
 /* MAP */
 .map-wrap{flex:1;position:relative}
-#map{width:100%;height:100%;background:#04080a}
-.leaflet-tile{filter:brightness(0.3) saturate(0.5) hue-rotate(180deg)}
-.leaflet-container{background:#04080a}
+#map{width:100%;height:100%}
+.leaflet-container{background:#e8f0f7}
+
+/* MAP OVERLAYS */
+.map-legend{position:absolute;bottom:20px;left:14px;background:white;border:1px solid var(--border);border-radius:10px;padding:12px 16px;z-index:999;font-size:11px;box-shadow:var(--shadow-md)}
+.legend-title{color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;font-size:9px;font-weight:600}
+.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;color:var(--text2);font-size:11px;font-weight:500}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.map-stats-bar{position:absolute;top:14px;left:14px;display:flex;gap:8px;z-index:999}
+.map-stat{background:white;border:1px solid var(--border);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)}
+.map-stat-val{font-family:'Courier New',monospace;color:var(--accent-dark);font-weight:700;font-size:14px}
+.map-stat-label{color:var(--muted);font-size:10px;font-weight:500}
 
 /* DETAIL PANEL */
-.detail-panel{width:340px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;transform:translateX(100%);transition:transform 0.3s ease}
+.detail-panel{width:340px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:-4px 0 15px rgba(0,0,0,0.05)}
 .detail-panel.open{transform:translateX(0)}
-.detail-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.detail-title{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-.close-btn{width:24px;height:24px;background:var(--dim);border:none;border-radius:4px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
-.detail-body{flex:1;overflow-y:auto;padding:14px}
+.detail-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg)}
+.detail-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.close-btn{width:26px;height:26px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.15s}
+.close-btn:hover{background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
+.detail-body{flex:1;overflow-y:auto;padding:16px}
 .detail-body::-webkit-scrollbar{width:4px}
-.detail-body::-webkit-scrollbar-track{background:var(--bg)}
-.detail-body::-webkit-scrollbar-thumb{background:var(--dim)}
-.detail-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.detail-kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
-.detail-kpi-val{font-size:20px;font-weight:700;font-family:'Courier New',monospace;line-height:1}
-.detail-kpi-label{font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
-.detail-section{margin-bottom:14px}
-.detail-section-title{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.detail-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px}
+.detail-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.status-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:14px;font-weight:600;font-size:12px}
+.detail-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.detail-kpi{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.detail-kpi-val{font-size:22px;font-weight:700;font-family:'Courier New',monospace;line-height:1;color:var(--text)}
+.detail-kpi-label{font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;font-weight:600}
+.detail-section{margin-bottom:16px}
+.detail-section-title{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--border)}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg);font-size:12px}
 .detail-row:last-child{border:none}
-.detail-key{color:var(--muted)}
-.detail-val{color:var(--text);font-family:'Courier New',monospace;font-size:10px}
-.predict-btn{width:100%;padding:10px;background:var(--accent);color:var(--bg);border:none;border-radius:7px;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:8px}
-.predict-btn:hover{opacity:0.85}
-.status-indicator{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:7px;margin-bottom:10px}
-.status-dot-lg{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.esmode-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:4px}
-.esmode-box{background:var(--dim);border:1px solid var(--border);border-radius:4px;padding:4px;text-align:center;font-size:9px}
-.esmode-box.active{background:rgba(0,212,255,0.1);border-color:var(--accent);color:var(--accent)}
-canvas{max-height:140px}
+.detail-key{color:var(--muted);font-weight:500}
+.detail-val{color:var(--text);font-family:'Courier New',monospace;font-size:11px;font-weight:600}
+.predict-btn{width:100%;padding:11px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;margin-top:8px;box-shadow:0 2px 4px rgba(14,165,233,0.3);transition:all 0.2s}
+.predict-btn:hover{background:var(--accent-dark);box-shadow:0 4px 8px rgba(14,165,233,0.4)}
+.predict-btn:disabled{background:var(--dim);box-shadow:none;cursor:not-allowed}
+.esmode-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px}
+.esmode-box{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:5px;text-align:center;font-size:9px;font-weight:600;color:var(--muted)}
+.esmode-box.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent-dark)}
 
 /* PAGES */
 .page{display:none;flex:1;overflow:hidden}
 .page.active{display:flex}
 
 /* STATS PAGE */
-.stats-page{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
-.stats-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.skpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden}
-.skpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent)}
-.skpi.warn::before{background:var(--warn)}
-.skpi.danger::before{background:var(--danger)}
-.skpi.success::before{background:var(--success)}
-.skpi-val{font-size:26px;font-weight:700;color:var(--accent);font-family:'Courier New',monospace}
+.stats-wrap{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.skpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.skpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.skpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);border-radius:12px 12px 0 0}
+.skpi.warn::after{background:var(--warn)}
+.skpi.danger::after{background:var(--danger)}
+.skpi.success::after{background:var(--success)}
+.skpi-val{font-size:28px;font-weight:800;color:var(--text);font-family:'Courier New',monospace;line-height:1.1}
 .skpi.warn .skpi-val{color:var(--warn)}
 .skpi.danger .skpi-val{color:var(--danger)}
 .skpi.success .skpi-val{color:var(--success)}
-.skpi-label{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
-.skpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
-.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
-.chart-card-title{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
-.badge{padding:2px 8px;border-radius:12px;font-size:9px;font-weight:600;letter-spacing:1px}
-.badge-blue{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2)}
-.badge-green{background:rgba(46,213,115,0.1);color:var(--success);border:1px solid rgba(46,213,115,0.2)}
-.badge-warn{background:rgba(255,165,2,0.1);color:var(--warn);border:1px solid rgba(255,165,2,0.2)}
-.badge-danger{background:rgba(255,71,87,0.1);color:var(--danger);border:1px solid rgba(255,71,87,0.2)}
+.skpi-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.skpi-sub{font-size:11px;color:var(--muted);margin-top:6px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.chart-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.tbl-header{display:grid;grid-template-columns:140px 80px 80px 70px 60px 70px 90px;gap:8px;padding:8px 0;border-bottom:2px solid var(--border);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.tbl-row{display:grid;grid-template-columns:140px 80px 80px 70px 60px 70px 90px;gap:8px;padding:8px 0;border-bottom:1px solid var(--bg);font-size:11px;align-items:center;transition:background 0.15s;cursor:pointer}
+.tbl-row:hover{background:var(--bg);border-radius:8px;padding-left:8px}
 
-/* MAP LEGEND */
-.map-legend{position:absolute;bottom:20px;left:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;z-index:999;font-size:10px}
-.legend-title{color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-size:9px}
-.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:var(--text)}
-.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+/* PREDICT PAGE */
+.predict-wrap{flex:1;padding:20px;overflow-y:auto;display:flex;gap:16px}
+.pred-form{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);max-width:480px}
+.pred-result-wrap{flex:1;display:flex;flex-direction:column;gap:12px}
+.pred-result{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:var(--shadow);transition:border-color 0.3s}
+.pred-val{font-size:64px;font-weight:800;font-family:'Courier New',monospace;line-height:1;transition:color 0.3s}
+.pred-unit{font-size:11px;color:var(--muted);letter-spacing:3px;margin-top:4px;font-weight:600;text-transform:uppercase}
+.pred-status{font-size:12px;margin-top:12px;padding:8px 16px;border-radius:20px;display:inline-block;font-weight:600}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.fg input{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Courier New',monospace;font-size:13px;font-weight:600;outline:none;transition:all 0.2s}
+.fg input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(14,165,233,0.1)}
 
-.map-stats{position:absolute;top:14px;left:14px;display:flex;flex-direction:column;gap:6px;z-index:999}
-.map-stat-badge{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 12px;display:flex;align-items:center;gap:8px;font-size:11px}
-.map-stat-val{font-family:'Courier New',monospace;color:var(--accent);font-weight:600}
-.map-stat-label{color:var(--muted);font-size:9px}
+/* BADGE */
+.badge{padding:3px 10px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.badge-blue{background:var(--accent-light);color:var(--accent-dark);border:1px solid #bae6fd}
+.badge-green{background:var(--success-bg);color:var(--success);border:1px solid #86efac}
+.badge-warn{background:var(--warn-bg);color:var(--warn);border:1px solid #fcd34d}
+.badge-danger{background:var(--danger-bg);color:var(--danger);border:1px solid #fca5a5}
 </style>
 </head>
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="brand">
     <div class="brand-icon">
@@ -151,12 +188,12 @@ canvas{max-height:140px}
     </div>
     <div>
       <div class="brand-name">SmartNetEnergy</div>
-      <div class="brand-sub">5G Tower Intelligence — Tunisia</div>
+      <div class="brand-sub">5G Tower Intelligence Platform — Tunisia</div>
     </div>
   </div>
   <div class="topbar-right">
-    <div class="kpi-mini"><div class="kpi-mini-val" id="top-towers">24</div><div class="kpi-mini-label">Towers</div></div>
-    <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--danger)" id="top-critical">3</div><div class="kpi-mini-label">Critical</div></div>
+    <div class="kpi-mini"><div class="kpi-mini-val">24</div><div class="kpi-mini-label">Towers</div></div>
+    <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--danger)" id="top-crit">3</div><div class="kpi-mini-label">Critical</div></div>
     <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--warn)" id="top-warn">5</div><div class="kpi-mini-label">Warning</div></div>
     <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--success)" id="top-ok">16</div><div class="kpi-mini-label">Normal</div></div>
     <div class="live-badge"><div class="live-dot"></div>LIVE</div>
@@ -164,23 +201,24 @@ canvas{max-height:140px}
   </div>
 </div>
 
+<!-- NAV -->
 <nav class="nav">
-  <div class="nav-item active" onclick="switchPage('map',this)">🗺 TOWER MAP</div>
-  <div class="nav-item" onclick="switchPage('stats',this)">📊 STATISTICS</div>
-  <div class="nav-item" onclick="switchPage('predict',this)">⚡ PREDICTION</div>
+  <div class="nav-item active" onclick="switchPage('map',this)">🗺️ Tower Map</div>
+  <div class="nav-item" onclick="switchPage('stats',this)">📊 Statistics</div>
+  <div class="nav-item" onclick="switchPage('predict',this)">⚡ Prediction</div>
 </nav>
 
 <!-- MAP PAGE -->
 <div id="page-map" class="page active">
   <div class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-title">Tower directory — Tunisia</div>
+      <div class="sidebar-title">Tower Directory</div>
       <input class="search-box" placeholder="🔍 Search tower, city, vendor..." id="search" oninput="filterTowers()">
       <div class="filter-row">
-        <div class="filter-btn active" onclick="setFilter('all',this)">ALL</div>
-        <div class="filter-btn danger" onclick="setFilter('critical',this)">CRITICAL</div>
-        <div class="filter-btn warn" onclick="setFilter('warning',this)">WARNING</div>
-        <div class="filter-btn success" onclick="setFilter('normal',this)">NORMAL</div>
+        <div class="filter-btn active" onclick="setFilter('all',this)">All</div>
+        <div class="filter-btn fdanger" onclick="setFilter('critical',this)">Critical</div>
+        <div class="filter-btn fwarn" onclick="setFilter('warning',this)">Warning</div>
+        <div class="filter-btn fsuccess" onclick="setFilter('normal',this)">Normal</div>
       </div>
     </div>
     <div class="tower-list" id="tower-list"></div>
@@ -188,15 +226,15 @@ canvas{max-height:140px}
 
   <div class="map-wrap">
     <div id="map"></div>
-    <div class="map-stats">
-      <div class="map-stat-badge"><span class="map-stat-val" id="ms-total">24</span><span class="map-stat-label">towers monitored</span></div>
-      <div class="map-stat-badge"><span class="map-stat-val" id="ms-avg" style="color:var(--accent)">—</span><span class="map-stat-label">avg consumption</span></div>
+    <div class="map-stats-bar">
+      <div class="map-stat"><span class="map-stat-val">24</span><span class="map-stat-label">Towers monitored</span></div>
+      <div class="map-stat"><span class="map-stat-val" id="ms-avg" style="color:var(--accent)">—</span><span class="map-stat-label">Avg consumption</span></div>
     </div>
     <div class="map-legend">
       <div class="legend-title">Energy status</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#ff4757"></div>Critical (&gt;700W)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#ffa502"></div>Warning (400-700W)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#2ed573"></div>Normal (&lt;400W)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>Critical (&gt;700W)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div>Warning (400–700W)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>Normal (&lt;400W)</div>
     </div>
   </div>
 
@@ -211,56 +249,66 @@ canvas{max-height:140px}
 
 <!-- STATS PAGE -->
 <div id="page-stats" class="page">
-  <div class="stats-page">
-    <div class="stats-kpi-grid">
+  <div class="stats-wrap">
+    <div class="skpi-grid">
       <div class="skpi"><div class="skpi-label">Total towers</div><div class="skpi-val">24</div><div class="skpi-sub">Across Tunisia</div></div>
-      <div class="skpi danger"><div class="skpi-label">Avg consumption</div><div class="skpi-val" id="stat-avg">—</div><div class="skpi-sub">watts per tower</div></div>
-      <div class="skpi warn"><div class="skpi-label">Peak consumption</div><div class="skpi-val" id="stat-peak">—</div><div class="skpi-sub">highest tower</div></div>
-      <div class="skpi success"><div class="skpi-label">ESMode savings</div><div class="skpi-val">21%</div><div class="skpi-sub">vs baseline</div></div>
+      <div class="skpi danger"><div class="skpi-label">Avg consumption</div><div class="skpi-val" id="s-avg">—</div><div class="skpi-sub">watts per tower</div></div>
+      <div class="skpi warn"><div class="skpi-label">Peak consumption</div><div class="skpi-val" id="s-peak">—</div><div class="skpi-sub">highest tower</div></div>
+      <div class="skpi success"><div class="skpi-label">ESMode savings</div><div class="skpi-val">21%</div><div class="skpi-sub">vs no ESMode</div></div>
     </div>
     <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-card-title">Energy by city</div>
-        <canvas id="chart-city"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-card-title">Status distribution</div>
-        <canvas id="chart-status"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-card-title">Load vs energy</div>
-        <canvas id="chart-load"></canvas>
-      </div>
+      <div class="chart-card"><div class="chart-title">Energy by city</div><canvas id="chart-city"></canvas></div>
+      <div class="chart-card"><div class="chart-title">Status distribution</div><canvas id="chart-status"></canvas></div>
+      <div class="chart-card"><div class="chart-title">Load vs energy</div><canvas id="chart-load"></canvas></div>
     </div>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
-      <div style="font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-        All towers <span class="badge badge-blue">24 towers</span>
+    <div class="table-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <span style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase">All Towers</span>
+        <span class="badge badge-blue">24 towers</span>
       </div>
-      <div id="full-tower-table"></div>
+      <div class="tbl-header"><span>Tower ID</span><span>City</span><span>Vendor</span><span>Freq</span><span>Load</span><span>Energy</span><span>Status</span></div>
+      <div id="full-table"></div>
     </div>
   </div>
 </div>
 
 <!-- PREDICT PAGE -->
 <div id="page-predict" class="page">
-  <div style="flex:1;padding:20px;overflow-y:auto;max-width:800px;margin:0 auto">
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px">
-      <div style="font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">Manual prediction</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Traffic load (Mbps)</label><input id="p_tl" type="number" value="1200" style="background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--accent);font-family:'Courier New',monospace;font-size:13px;outline:none"></div>
-        <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Antenna count</label><input id="p_ac" type="number" value="64" style="background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--accent);font-family:'Courier New',monospace;font-size:13px;outline:none"></div>
-        <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Bandwidth (MHz)</label><input id="p_bw" type="number" value="100" style="background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--accent);font-family:'Courier New',monospace;font-size:13px;outline:none"></div>
-        <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">TX Power (dBm)</label><input id="p_tp" type="number" value="43" style="background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--accent);font-family:'Courier New',monospace;font-size:13px;outline:none"></div>
-        <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Frequency (MHz)</label><input id="p_fr" type="number" value="3500" style="background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--accent);font-family:'Courier New',monospace;font-size:13px;outline:none"></div>
-        <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">ESMode active (0-6)</label><input id="p_es" type="number" value="2" min="0" max="6" style="background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--accent);font-family:'Courier New',monospace;font-size:13px;outline:none"></div>
+  <div class="predict-wrap">
+    <div class="pred-form">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)">Manual Prediction</div>
+      <div class="form-row">
+        <div class="fg"><label>Traffic load (Mbps)</label><input id="p_tl" type="number" value="1200"></div>
+        <div class="fg"><label>Antenna count</label><input id="p_ac" type="number" value="64"></div>
       </div>
-      <button onclick="runPredict()" id="pbtn" style="width:100%;padding:11px;background:var(--accent);color:var(--bg);border:none;border-radius:7px;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;text-transform:uppercase">PREDICT ENERGY CONSUMPTION</button>
+      <div class="form-row">
+        <div class="fg"><label>Bandwidth (MHz)</label><input id="p_bw" type="number" value="100"></div>
+        <div class="fg"><label>TX Power (dBm)</label><input id="p_tp" type="number" value="43"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Frequency (MHz)</label><input id="p_fr" type="number" value="3500"></div>
+        <div class="fg"><label>ESMode active (0-6)</label><input id="p_es" type="number" value="2" min="0" max="6"></div>
+      </div>
+      <button onclick="runPredict()" id="pbtn" style="width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 4px rgba(14,165,233,0.3);transition:all 0.2s;margin-top:4px">
+        ⚡ Predict Energy Consumption
+      </button>
     </div>
-    <div id="presult" style="display:none;background:var(--card);border:1px solid var(--accent);border-radius:10px;padding:20px;text-align:center">
-      <div style="font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Prediction result</div>
-      <div id="presult-val" style="font-size:56px;font-weight:800;color:var(--accent);font-family:'Courier New',monospace;line-height:1"></div>
-      <div style="font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:4px">WATTS</div>
-      <div id="presult-status" style="font-size:11px;margin-top:10px;padding:6px 14px;border-radius:20px;display:inline-block"></div>
+    <div class="pred-result-wrap">
+      <div class="pred-result" id="presult">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px">Prediction Result</div>
+        <div class="pred-val" id="presult-val" style="color:var(--dim)">—</div>
+        <div class="pred-unit">Watts</div>
+        <div class="pred-status" id="presult-status" style="background:var(--bg);color:var(--muted)">Enter parameters and run prediction</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">API Information</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--muted)">Endpoint</span><span style="font-family:'Courier New',monospace;color:var(--accent-dark);font-size:10px">POST /predict</span></div>
+          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--muted)">Status</span><span class="badge badge-green">ONLINE</span></div>
+          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--muted)">Model</span><span class="badge badge-warn">DEMO MODE</span></div>
+          <div style="display:flex;justify-content:space-between;padding:7px 0"><span style="color:var(--muted)">Hosted on</span><span style="font-family:'Courier New',monospace;color:var(--muted);font-size:10px">Azure Container Apps</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -268,7 +316,6 @@ canvas{max-height:140px}
 <script>
 const API = "https://smartnetenergy-api.gentlesmoke-2dbdff9e.germanywestcentral.azurecontainerapps.io";
 
-// ── Tower data (24 towers across Tunisia) ──
 const towers = [
   {id:'TN-TUN-001',city:'Tunis',lat:36.8065,lng:10.1815,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:43,load:1800,esmode:[1,1,0,0,1,0],energy:720,status:'warning'},
   {id:'TN-TUN-002',city:'Tunis',lat:36.8190,lng:10.1660,vendor:'Ericsson',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:900,esmode:[1,1,1,0,0,0],energy:380,status:'normal'},
@@ -296,47 +343,40 @@ const towers = [
   {id:'TN-TAB-001',city:'Tabarka',lat:36.9542,lng:8.7576,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:420,esmode:[1,1,0,0,0,0],energy:195,status:'normal'},
 ];
 
-let currentFilter = 'all';
-let selectedTower = null;
-let markers = {};
-let chartCity = null, chartStatus = null, chartLoad = null;
+let currentFilter='all', selectedTower=null, markers={};
+let chartCity=null,chartStatus=null,chartLoad=null;
 
-function statusColor(s){
-  return s==='critical'?'#ff4757':s==='warning'?'#ffa502':'#2ed573';
-}
+function sColor(s){return s==='critical'?'#dc2626':s==='warning'?'#d97706':'#16a34a'}
+function sBg(s){return s==='critical'?'#fee2e2':s==='warning'?'#fef3c7':'#dcfce7'}
 
-// ── MAP INIT ──
+// MAP
 const map = L.map('map',{zoomControl:true}).setView([34.0,9.0],6);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-  attribution:'© OpenStreetMap',maxZoom:18
-}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
 
-function createIcon(tower){
-  const col = statusColor(tower.status);
-  const size = tower.status==='critical'?18:tower.status==='warning'?15:12;
+function createIcon(t){
+  const c=sColor(t.status), size=t.status==='critical'?20:t.status==='warning'?16:13;
   return L.divIcon({
-    html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${col};border:2px solid ${col}44;box-shadow:0 0 ${tower.status==='critical'?12:6}px ${col};"></div>`,
+    html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${c};border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.25),0 0 0 2px ${c}44"></div>`,
     className:'',iconSize:[size,size],iconAnchor:[size/2,size/2]
   });
 }
 
 towers.forEach(t=>{
-  const m = L.marker([t.lat,t.lng],{icon:createIcon(t)}).addTo(map);
-  m.bindTooltip(`<b>${t.id}</b><br>${t.city} — ${t.energy}W`,{
-    className:'leaflet-tooltip',direction:'top'
-  });
+  const m=L.marker([t.lat,t.lng],{icon:createIcon(t)}).addTo(map);
+  m.bindTooltip(`<div style="font-family:system-ui;font-size:12px"><b>${t.id}</b><br><span style="color:${sColor(t.status)};font-weight:600">${t.energy}W</span> — ${t.city}</div>`,{direction:'top'});
   m.on('click',()=>selectTower(t));
-  markers[t.id] = m;
+  markers[t.id]=m;
 });
 
-// ── SIDEBAR ──
+const avg=Math.round(towers.reduce((s,t)=>s+t.energy,0)/towers.length);
+document.getElementById('ms-avg').textContent=avg+'W';
+
 function renderList(list){
-  const el = document.getElementById('tower-list');
-  el.innerHTML = list.map(t=>`
+  document.getElementById('tower-list').innerHTML=list.map(t=>`
     <div class="tower-card${selectedTower?.id===t.id?' selected':''}" onclick="selectTower(towers.find(x=>x.id==='${t.id}'))">
       <div class="tower-card-top">
         <span class="tower-id">${t.id}</span>
-        <span class="tower-energy-badge" style="color:${statusColor(t.status)}">${t.energy}W</span>
+        <span class="tower-energy-badge" style="color:${sColor(t.status)}">${t.energy}W</span>
       </div>
       <div class="tower-card-info">
         <span class="tower-tag">${t.city}</span>
@@ -344,16 +384,16 @@ function renderList(list){
         <span class="tower-tag">${t.freq}MHz</span>
       </div>
       <div class="tower-bar-bg">
-        <div class="tower-bar-fill" style="width:${Math.min(100,Math.round((t.energy/1000)*100))}%;background:${statusColor(t.status)}"></div>
+        <div class="tower-bar-fill" style="width:${Math.min(100,Math.round((t.energy/1000)*100))}%;background:${sColor(t.status)}"></div>
       </div>
     </div>`).join('');
 }
 
 function filterTowers(){
-  const q = document.getElementById('search').value.toLowerCase();
-  let list = towers;
-  if(currentFilter!=='all') list = list.filter(t=>t.status===currentFilter);
-  if(q) list = list.filter(t=>t.id.toLowerCase().includes(q)||t.city.toLowerCase().includes(q)||t.vendor.toLowerCase().includes(q));
+  const q=document.getElementById('search').value.toLowerCase();
+  let list=towers;
+  if(currentFilter!=='all') list=list.filter(t=>t.status===currentFilter);
+  if(q) list=list.filter(t=>t.id.toLowerCase().includes(q)||t.city.toLowerCase().includes(q)||t.vendor.toLowerCase().includes(q));
   renderList(list);
 }
 
@@ -364,215 +404,127 @@ function setFilter(f,el){
   filterTowers();
 }
 
-// ── TOWER SELECT ──
 function selectTower(t){
-  selectedTower = t;
+  selectedTower=t;
   filterTowers();
   map.flyTo([t.lat,t.lng],13,{duration:1.2});
-
-  const esModes = t.esmode.map((v,i)=>`<div class="esmode-box${v?' active':''}">ES${i+1}</div>`).join('');
-  const col = statusColor(t.status);
-  const statusLabel = t.status==='critical'?'CRITICAL — Immediate action required':t.status==='warning'?'WARNING — Monitor closely':'NORMAL — Operating efficiently';
-
-  document.getElementById('detail-body').innerHTML = `
-    <div class="status-indicator" style="background:${col}18;border:1px solid ${col}44;margin-bottom:12px">
-      <div class="status-dot-lg" style="background:${col}"></div>
-      <span style="color:${col};font-size:11px;font-weight:600;letter-spacing:1px">${statusLabel}</span>
+  const c=sColor(t.status), bg=sBg(t.status);
+  const statusText=t.status==='critical'?'Critical — Immediate action required':t.status==='warning'?'Warning — Monitor closely':'Normal — Operating efficiently';
+  document.getElementById('detail-body').innerHTML=`
+    <div class="status-banner" style="background:${bg};color:${c};border:1px solid ${c}44">
+      <div style="width:8px;height:8px;border-radius:50%;background:${c};flex-shrink:0"></div>
+      ${statusText}
     </div>
-
     <div class="detail-kpi-grid">
-      <div class="detail-kpi">
-        <div class="detail-kpi-val" style="color:${col}">${t.energy}</div>
-        <div class="detail-kpi-label">Watts</div>
-      </div>
-      <div class="detail-kpi">
-        <div class="detail-kpi-val" style="color:var(--accent)">${t.load}</div>
-        <div class="detail-kpi-label">Traffic (Mbps)</div>
-      </div>
-      <div class="detail-kpi">
-        <div class="detail-kpi-val" style="color:var(--text)">${t.antennas}</div>
-        <div class="detail-kpi-label">Antennas</div>
-      </div>
-      <div class="detail-kpi">
-        <div class="detail-kpi-val" style="color:var(--text)">${t.esmode.filter(v=>v).length}/6</div>
-        <div class="detail-kpi-label">ESMode</div>
-      </div>
+      <div class="detail-kpi"><div class="detail-kpi-val" style="color:${c}">${t.energy}</div><div class="detail-kpi-label">Watts</div></div>
+      <div class="detail-kpi"><div class="detail-kpi-val" style="color:var(--accent-dark)">${t.load}</div><div class="detail-kpi-label">Traffic (Mbps)</div></div>
+      <div class="detail-kpi"><div class="detail-kpi-val">${t.antennas}</div><div class="detail-kpi-label">Antennas</div></div>
+      <div class="detail-kpi"><div class="detail-kpi-val">${t.esmode.filter(v=>v).length}/6</div><div class="detail-kpi-label">ESMode</div></div>
     </div>
-
     <div class="detail-section">
-      <div class="detail-section-title">Tower identity</div>
+      <div class="detail-section-title">Tower Identity</div>
       <div class="detail-row"><span class="detail-key">Tower ID</span><span class="detail-val">${t.id}</span></div>
       <div class="detail-row"><span class="detail-key">City</span><span class="detail-val">${t.city}</span></div>
       <div class="detail-row"><span class="detail-key">Vendor</span><span class="detail-val">${t.vendor}</span></div>
       <div class="detail-row"><span class="detail-key">Mode</span><span class="detail-val">${t.mode}</span></div>
       <div class="detail-row"><span class="detail-key">Coordinates</span><span class="detail-val">${t.lat.toFixed(4)}, ${t.lng.toFixed(4)}</span></div>
     </div>
-
     <div class="detail-section">
-      <div class="detail-section-title">RF configuration</div>
+      <div class="detail-section-title">RF Configuration</div>
       <div class="detail-row"><span class="detail-key">Frequency</span><span class="detail-val">${t.freq} MHz</span></div>
       <div class="detail-row"><span class="detail-key">Bandwidth</span><span class="detail-val">${t.bw} MHz</span></div>
-      <div class="detail-row"><span class="detail-key">Antennas</span><span class="detail-val">${t.antennas}</span></div>
       <div class="detail-row"><span class="detail-key">TX Power</span><span class="detail-val">${t.tx} dBm</span></div>
     </div>
-
     <div class="detail-section">
-      <div class="detail-section-title">Energy saving modes</div>
-      <div class="esmode-grid">${esModes}</div>
+      <div class="detail-section-title">Energy Saving Modes</div>
+      <div class="esmode-grid">${t.esmode.map((v,i)=>`<div class="esmode-box${v?' active':''}">ES${i+1}</div>`).join('')}</div>
     </div>
-
     <div class="detail-section">
-      <div class="detail-section-title">Energy consumption</div>
-      <div class="detail-row"><span class="detail-key">Current</span><span class="detail-val" style="color:${col}">${t.energy} W</span></div>
+      <div class="detail-section-title">Energy Consumption</div>
+      <div class="detail-row"><span class="detail-key">Current</span><span class="detail-val" style="color:${c}">${t.energy} W</span></div>
       <div class="detail-row"><span class="detail-key">In kW</span><span class="detail-val">${(t.energy/1000).toFixed(3)} kW</span></div>
       <div class="detail-row"><span class="detail-key">Load factor</span><span class="detail-val">${Math.round((t.load/5000)*100)}%</span></div>
     </div>
-
-    <button class="predict-btn" onclick="predictForTower('${t.id}')">⚡ RE-PREDICT ENERGY</button>
-    <div id="tower-pred-result" style="margin-top:10px"></div>
-  `;
+    <button class="predict-btn" onclick="predictForTower('${t.id}')">⚡ Re-predict Energy</button>
+    <div id="tpred" style="margin-top:10px"></div>`;
   document.getElementById('detail-panel').classList.add('open');
 }
 
 function closeDetail(){
   document.getElementById('detail-panel').classList.remove('open');
-  selectedTower = null;
+  selectedTower=null;
   filterTowers();
 }
 
 async function predictForTower(id){
-  const t = towers.find(x=>x.id===id);
-  const btn = document.querySelector('.predict-btn');
-  btn.disabled = true; btn.textContent = 'COMPUTING...';
-  try {
-    const r = await fetch(API+'/predict',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({traffic_load:t.load,antenna_count:t.antennas,bandwidth:t.bw,tx_power:t.tx,frequency:t.freq,esmode_sum:t.esmode.filter(v=>v).length})
-    });
-    const d = await r.json();
-    const v = d.energy_prediction;
-    const col = v>700?'var(--danger)':v>400?'var(--warn)':'var(--success)';
-    document.getElementById('tower-pred-result').innerHTML = `
-      <div style="background:var(--card);border:1px solid ${col};border-radius:8px;padding:10px;text-align:center">
-        <div style="font-size:28px;font-weight:700;color:${col};font-family:'Courier New',monospace">${v.toFixed(1)} W</div>
-        <div style="font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:2px">ML PREDICTION</div>
-      </div>`;
-  } catch(e) {
-    document.getElementById('tower-pred-result').innerHTML = `<div style="font-size:11px;color:var(--danger);text-align:center;padding:6px">API connection error</div>`;
-  }
-  btn.disabled = false; btn.textContent = '⚡ RE-PREDICT ENERGY';
+  const t=towers.find(x=>x.id===id);
+  const btn=document.querySelector('.predict-btn');
+  btn.disabled=true;btn.textContent='Computing...';
+  try{
+    const r=await fetch(API+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({traffic_load:t.load,antenna_count:t.antennas,bandwidth:t.bw,tx_power:t.tx,frequency:t.freq,esmode_sum:t.esmode.filter(v=>v).length})});
+    const d=await r.json();
+    const v=d.energy_prediction,c=sColor(v>700?'critical':v>400?'warning':'normal'),bg=sBg(v>700?'critical':v>400?'warning':'normal');
+    document.getElementById('tpred').innerHTML=`<div style="background:${bg};border:1px solid ${c}44;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px;font-weight:800;color:${c};font-family:'Courier New',monospace">${v.toFixed(1)} W</div><div style="font-size:10px;color:${c};font-weight:600;margin-top:4px;letter-spacing:1px;text-transform:uppercase">ML Prediction</div></div>`;
+  }catch(e){document.getElementById('tpred').innerHTML=`<div style="font-size:11px;color:var(--danger);text-align:center;padding:8px;background:var(--danger-bg);border-radius:8px">API connection error</div>`;}
+  btn.disabled=false;btn.textContent='⚡ Re-predict Energy';
 }
 
-// ── STATS ──
+// STATS
 function initStats(){
-  const avg = Math.round(towers.reduce((s,t)=>s+t.energy,0)/towers.length);
-  const peak = Math.max(...towers.map(t=>t.energy));
-  document.getElementById('stat-avg').textContent = avg+'W';
-  document.getElementById('stat-peak').textContent = peak+'W';
-  document.getElementById('ms-avg').textContent = avg+'W';
-
-  const cities = [...new Set(towers.map(t=>t.city))];
-  const cityAvg = cities.map(c=>{
-    const ct = towers.filter(t=>t.city===c);
-    return Math.round(ct.reduce((s,t)=>s+t.energy,0)/ct.length);
-  });
-
-  const chartOpts = {
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#3a6070',font:{size:9}},grid:{color:'#0e2028'}},
-      y:{ticks:{color:'#3a6070',font:{size:9}},grid:{color:'#0e2028'}}
-    }
-  };
-
-  if(chartCity) chartCity.destroy();
-  chartCity = new Chart(document.getElementById('chart-city'),{type:'bar',data:{
-    labels:cities,
-    datasets:[{data:cityAvg,backgroundColor:cityAvg.map(v=>v>700?'#ff4757':v>400?'#ffa502':'#2ed573'),borderRadius:4,borderSkipped:false}]
-  },options:{...chartOpts}});
-
-  const crit = towers.filter(t=>t.status==='critical').length;
-  const warn = towers.filter(t=>t.status==='warning').length;
-  const norm = towers.filter(t=>t.status==='normal').length;
-
-  if(chartStatus) chartStatus.destroy();
-  chartStatus = new Chart(document.getElementById('chart-status'),{type:'doughnut',data:{
-    labels:['Critical','Warning','Normal'],
-    datasets:[{data:[crit,warn,norm],backgroundColor:['#ff4757','#ffa502','#2ed573'],borderWidth:0,hoverOffset:4}]
-  },options:{plugins:{legend:{labels:{color:'#3a6070',font:{size:10}}}},cutout:'65%'}});
-
-  const sorted = [...towers].sort((a,b)=>a.load-b.load);
-  if(chartLoad) chartLoad.destroy();
-  chartLoad = new Chart(document.getElementById('chart-load'),{type:'scatter',data:{
-    datasets:[{data:sorted.map(t=>({x:t.load,y:t.energy})),backgroundColor:sorted.map(t=>statusColor(t.status)),pointRadius:5}]
-  },options:{plugins:{legend:{display:false}},scales:{
-    x:{title:{display:true,text:'Load (Mbps)',color:'#3a6070',font:{size:9}},ticks:{color:'#3a6070',font:{size:9}},grid:{color:'#0e2028'}},
-    y:{title:{display:true,text:'Energy (W)',color:'#3a6070',font:{size:9}},ticks:{color:'#3a6070',font:{size:9}},grid:{color:'#0e2028'}}
-  }}});
-
-  document.getElementById('full-tower-table').innerHTML = towers.map(t=>`
-    <div style="display:grid;grid-template-columns:140px 80px 70px 70px 60px 60px 80px;gap:6px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center">
-      <span style="font-family:'Courier New',monospace;color:var(--accent);font-size:10px">${t.id}</span>
-      <span style="color:var(--muted)">${t.city}</span>
+  const avg=Math.round(towers.reduce((s,t)=>s+t.energy,0)/towers.length);
+  const peak=Math.max(...towers.map(t=>t.energy));
+  document.getElementById('s-avg').textContent=avg+'W';
+  document.getElementById('s-peak').textContent=peak+'W';
+  const cities=[...new Set(towers.map(t=>t.city))];
+  const cityAvg=cities.map(c=>Math.round(towers.filter(t=>t.city===c).reduce((s,t)=>s+t.energy,0)/towers.filter(t=>t.city===c).length));
+  const opts={plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#f1f5f9'}}}};
+  if(chartCity)chartCity.destroy();
+  chartCity=new Chart(document.getElementById('chart-city'),{type:'bar',data:{labels:cities,datasets:[{data:cityAvg,backgroundColor:cityAvg.map(v=>v>700?'#dc2626':v>400?'#d97706':'#16a34a'),borderRadius:5,borderSkipped:false}]},options:opts});
+  const crit=towers.filter(t=>t.status==='critical').length,warn=towers.filter(t=>t.status==='warning').length,norm=towers.filter(t=>t.status==='normal').length;
+  if(chartStatus)chartStatus.destroy();
+  chartStatus=new Chart(document.getElementById('chart-status'),{type:'doughnut',data:{labels:['Critical','Warning','Normal'],datasets:[{data:[crit,warn,norm],backgroundColor:['#dc2626','#d97706','#16a34a'],borderWidth:0,hoverOffset:6}]},options:{plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}},cutout:'60%'}});
+  if(chartLoad)chartLoad.destroy();
+  chartLoad=new Chart(document.getElementById('chart-load'),{type:'scatter',data:{datasets:[{data:towers.map(t=>({x:t.load,y:t.energy})),backgroundColor:towers.map(t=>sColor(t.status)),pointRadius:5,pointHoverRadius:7}]},options:{...opts,plugins:{legend:{display:false}},scales:{x:{...opts.scales.x,title:{display:true,text:'Load (Mbps)',color:'#64748b',font:{size:9}}},y:{...opts.scales.y,title:{display:true,text:'Energy (W)',color:'#64748b',font:{size:9}}}}}});
+  document.getElementById('full-table').innerHTML=towers.map(t=>`
+    <div class="tbl-row" onclick="switchPage('map',document.querySelectorAll('.nav-item')[0]);selectTower(towers.find(x=>x.id==='${t.id}'))">
+      <span style="font-family:'Courier New',monospace;color:var(--accent-dark);font-size:10px;font-weight:700">${t.id}</span>
+      <span style="color:var(--text2)">${t.city}</span>
       <span style="color:var(--muted)">${t.vendor}</span>
-      <span style="color:var(--text)">${t.freq}MHz</span>
-      <span style="color:var(--text)">${t.load}M</span>
-      <span style="color:${statusColor(t.status)};font-family:'Courier New',monospace;font-weight:600">${t.energy}W</span>
-      <span><span style="padding:2px 8px;border-radius:10px;font-size:9px;background:${statusColor(t.status)}18;color:${statusColor(t.status)};border:1px solid ${statusColor(t.status)}44">${t.status.toUpperCase()}</span></span>
+      <span style="color:var(--muted)">${t.freq}MHz</span>
+      <span style="color:var(--muted)">${t.load}M</span>
+      <span style="color:${sColor(t.status)};font-family:'Courier New',monospace;font-weight:700">${t.energy}W</span>
+      <span><span class="badge ${t.status==='critical'?'badge-danger':t.status==='warning'?'badge-warn':'badge-green'}">${t.status}</span></span>
     </div>`).join('');
 }
 
-// ── PREDICT PAGE ──
 async function runPredict(){
-  const btn = document.getElementById('pbtn');
-  btn.disabled = true; btn.textContent = 'COMPUTING...';
-  try {
-    const r = await fetch(API+'/predict',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        traffic_load:+document.getElementById('p_tl').value,
-        antenna_count:+document.getElementById('p_ac').value,
-        bandwidth:+document.getElementById('p_bw').value,
-        tx_power:+document.getElementById('p_tp').value,
-        frequency:+document.getElementById('p_fr').value,
-        esmode_sum:+document.getElementById('p_es').value
-      })
-    });
-    const d = await r.json();
-    const v = d.energy_prediction;
-    const col = v>700?'var(--danger)':v>400?'var(--warn)':'var(--success)';
-    const status = v>700?'CRITICAL — High energy consumption':v>400?'MODERATE — Normal range':'EFFICIENT — Energy saving active';
-    const res = document.getElementById('presult');
-    res.style.display = 'block';
-    res.style.borderColor = col;
-    document.getElementById('presult-val').textContent = v.toFixed(1);
-    document.getElementById('presult-val').style.color = col;
-    const st = document.getElementById('presult-status');
-    st.textContent = status;
-    st.style.background = col.replace(')',',0.1)').replace('var(','rgba(').replace('--danger','255,71,87').replace('--warn','255,165,2').replace('--success','46,213,115');
-    st.style.color = col;
-  } catch(e) {
-    alert('API connection error');
-  }
-  btn.disabled = false; btn.textContent = 'PREDICT ENERGY CONSUMPTION';
+  const btn=document.getElementById('pbtn');
+  btn.disabled=true;btn.textContent='Computing...';
+  try{
+    const r=await fetch(API+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({traffic_load:+document.getElementById('p_tl').value,antenna_count:+document.getElementById('p_ac').value,bandwidth:+document.getElementById('p_bw').value,tx_power:+document.getElementById('p_tp').value,frequency:+document.getElementById('p_fr').value,esmode_sum:+document.getElementById('p_es').value})});
+    const d=await r.json();const v=d.energy_prediction;
+    const s=v>700?'critical':v>400?'warning':'normal';const c=sColor(s),bg=sBg(s);
+    const st=v>700?'Critical — High energy consumption':v>400?'Moderate — Normal operating range':'Efficient — Energy saving active';
+    const res=document.getElementById('presult');
+    res.style.borderColor=c;
+    document.getElementById('presult-val').textContent=v.toFixed(1);
+    document.getElementById('presult-val').style.color=c;
+    const pst=document.getElementById('presult-status');
+    pst.textContent=st;pst.style.background=bg;pst.style.color=c;
+  }catch(e){alert('API connection error');}
+  btn.disabled=false;btn.textContent='⚡ Predict Energy Consumption';
 }
 
-// ── PAGE SWITCH ──
-function switchPage(id, el){
+function switchPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   el.classList.add('active');
-  if(id==='stats') setTimeout(initStats, 50);
-  if(id==='map') setTimeout(()=>map.invalidateSize(),100);
+  if(id==='stats')setTimeout(initStats,50);
+  if(id==='map')setTimeout(()=>map.invalidateSize(),100);
 }
 
-// ── CLOCK ──
-setInterval(()=>{
-  document.getElementById('clock').textContent = new Date().toUTCString().slice(17,25)+' UTC';
-},1000);
-
-// ── INIT ──
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toUTCString().slice(17,25)+' UTC';},1000);
 renderList(towers);
 initStats();
 </script>
