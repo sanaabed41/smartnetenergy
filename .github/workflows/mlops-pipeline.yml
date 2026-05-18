@@ -1,4 +1,4 @@
-name: SmartNetEnergy MLOps Pipeline — Secured
+name: SmartNetEnergy MLOps Pipeline - Secured
 
 on:
   push:
@@ -23,9 +23,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install fastapi uvicorn pydantic numpy scikit-learn \
-                      joblib httpx pytest python-jose python-multipart
+        run: pip install fastapi uvicorn pydantic numpy scikit-learn joblib httpx pytest python-jose python-multipart
 
       - name: Run security tests
         working-directory: ./api
@@ -36,7 +34,7 @@ jobs:
         run: pytest tests/ -v
 
   build:
-    name: Build & Push Docker
+    name: Build and Push Docker
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -51,9 +49,8 @@ jobs:
 
       - name: Build and push
         run: |
-          docker build ./api \
-            -t smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }} \
-            -t smartnetenergycr.azurecr.io/smartnetenergy-api:latest
+          docker build ./api -t smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }}
+          docker build ./api -t smartnetenergycr.azurecr.io/smartnetenergy-api:latest
           docker push smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }}
           docker push smartnetenergycr.azurecr.io/smartnetenergy-api:latest
 
@@ -75,11 +72,7 @@ jobs:
             --name smartnetenergy-api \
             --resource-group rg-smartnetenergy \
             --image smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }} \
-            --set-env-vars \
-              API_KEY_ADMIN=secretref:api-key-admin \
-              API_KEY_ENGINEER=secretref:api-key-engineer \
-              API_KEY_READONLY=secretref:api-key-readonly \
-              RATE_LIMIT_PER_MIN=60
+            --set-env-vars API_KEY_ADMIN=secretref:api-key-admin API_KEY_ENGINEER=secretref:api-key-engineer API_KEY_READONLY=secretref:api-key-readonly RATE_LIMIT_PER_MIN=60
 
   notify:
     name: Notification
@@ -88,4 +81,4 @@ jobs:
     if: always()
     steps:
       - name: Status
-        run: echo "Secured pipeline status: ${{ job.status }}"
+        run: echo "Pipeline status ${{ job.status }}"
