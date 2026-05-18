@@ -1,4 +1,4 @@
-name: SmartNetEnergy MLOps Pipeline
+name: SmartNetEnergy MLOps Pipeline — Secured
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   test:
-    name: Tests API
+    name: Security Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,10 +24,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install fastapi uvicorn pydantic numpy scikit-learn joblib httpx pytest
+          pip install fastapi uvicorn pydantic numpy scikit-learn \
+                      joblib httpx pytest python-jose python-multipart
 
-      - name: Run tests
+      - name: Run security tests
         working-directory: ./api
+        env:
+          API_KEY_ADMIN: ${{ secrets.API_KEY_ADMIN }}
+          API_KEY_ENGINEER: ${{ secrets.API_KEY_ENGINEER }}
+          API_KEY_READONLY: ${{ secrets.API_KEY_READONLY }}
         run: pytest tests/ -v
 
   build:
@@ -44,15 +49,16 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build and push image
+      - name: Build and push
         run: |
-          docker build ./api -t smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }}
-          docker build ./api -t smartnetenergycr.azurecr.io/smartnetenergy-api:latest
+          docker build ./api \
+            -t smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }} \
+            -t smartnetenergycr.azurecr.io/smartnetenergy-api:latest
           docker push smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }}
           docker push smartnetenergycr.azurecr.io/smartnetenergy-api:latest
 
   deploy:
-    name: Deploy to Azure
+    name: Deploy Secured API
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -63,13 +69,17 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy to Container Apps
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          acrName: smartnetenergycr
-          containerAppName: smartnetenergy-api
-          resourceGroup: rg-smartnetenergy
-          imageToDeploy: smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }}
+      - name: Deploy with secrets injection
+        run: |
+          az containerapp update \
+            --name smartnetenergy-api \
+            --resource-group rg-smartnetenergy \
+            --image smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }} \
+            --set-env-vars \
+              API_KEY_ADMIN=secretref:api-key-admin \
+              API_KEY_ENGINEER=secretref:api-key-engineer \
+              API_KEY_READONLY=secretref:api-key-readonly \
+              RATE_LIMIT_PER_MIN=60
 
   notify:
     name: Notification
@@ -77,5 +87,5 @@ jobs:
     needs: deploy
     if: always()
     steps:
-      - name: Pipeline status
-        run: echo "Pipeline completed with status ${{ job.status }}"
+      - name: Status
+        run: echo "Secured pipeline status: ${{ job.status }}"
