@@ -66,13 +66,27 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Add secrets to Container App first
+        run: |
+          az containerapp secret set \
+            --name smartnetenergy-api \
+            --resource-group rg-smartnetenergy \
+            --secrets \
+              api-key-admin="${{ secrets.API_KEY_ADMIN }}" \
+              api-key-engineer="${{ secrets.API_KEY_ENGINEER }}" \
+              api-key-readonly="${{ secrets.API_KEY_READONLY }}"
+
       - name: Deploy with secrets injection
         run: |
           az containerapp update \
             --name smartnetenergy-api \
             --resource-group rg-smartnetenergy \
             --image smartnetenergycr.azurecr.io/smartnetenergy-api:${{ github.sha }} \
-            --set-env-vars API_KEY_ADMIN=secretref:api-key-admin API_KEY_ENGINEER=secretref:api-key-engineer API_KEY_READONLY=secretref:api-key-readonly RATE_LIMIT_PER_MIN=60
+            --set-env-vars \
+              API_KEY_ADMIN=secretref:api-key-admin \
+              API_KEY_ENGINEER=secretref:api-key-engineer \
+              API_KEY_READONLY=secretref:api-key-readonly \
+              RATE_LIMIT_PER_MIN=60
 
   notify:
     name: Notification
