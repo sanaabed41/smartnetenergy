@@ -10,172 +10,151 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f0f4f8;
-  --surface:#ffffff;
-  --card:#ffffff;
-  --border:#e2e8f0;
-  --border2:#cbd5e1;
-  --accent:#0ea5e9;
-  --accent-dark:#0284c7;
-  --accent-light:#e0f2fe;
-  --success:#16a34a;
-  --success-bg:#dcfce7;
-  --warn:#d97706;
-  --warn-bg:#fef3c7;
-  --danger:#dc2626;
-  --danger-bg:#fee2e2;
-  --text:#0f172a;
-  --text2:#334155;
-  --muted:#64748b;
-  --dim:#94a3b8;
-  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.05);
-  --shadow-lg:0 10px 15px rgba(0,0,0,0.08),0 4px 6px rgba(0,0,0,0.04);
+  --bg:#f0f4f8;--surface:#fff;--border:#e2e8f0;
+  --accent:#0ea5e9;--accent-dark:#0284c7;--accent-light:#e0f2fe;
+  --success:#16a34a;--success-bg:#dcfce7;
+  --warn:#d97706;--warn-bg:#fef3c7;
+  --danger:#dc2626;--danger-bg:#fee2e2;
+  --purple:#7c3aed;--purple-bg:#ede9fe;
+  --text:#0f172a;--muted:#64748b;
+  --shadow:0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1);
 }
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* TOPBAR */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:56px;flex-shrink:0;box-shadow:var(--shadow)}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;box-shadow:var(--shadow);z-index:1000}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(14,165,233,0.3)}
-.brand-icon svg{width:18px;height:18px;fill:white}
-.brand-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
-.brand-sub{font-size:10px;color:var(--muted);letter-spacing:0.3px}
-.topbar-right{display:flex;align-items:center;gap:20px}
-.kpi-mini{text-align:center;padding:6px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border)}
-.kpi-mini-val{font-size:17px;font-weight:700;color:var(--text);font-family:'Courier New',monospace;line-height:1}
-.kpi-mini-label{font-size:9px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:2px}
-.live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--success);font-weight:600;letter-spacing:0.5px;background:var(--success-bg);padding:5px 10px;border-radius:20px;border:1px solid #86efac}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
-.time-display{font-family:'Courier New',monospace;font-size:12px;color:var(--muted);background:var(--bg);padding:5px 10px;border-radius:6px;border:1px solid var(--border)}
-
-/* NAV */
-.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 24px;flex-shrink:0}
-.nav-item{padding:12px 18px;font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;transition:all 0.2s}
-.nav-item:hover{color:var(--text)}
-.nav-item.active{color:var(--accent);border-bottom-color:var(--accent)}
-
-/* LAYOUT */
-.main{display:flex;flex:1;overflow:hidden}
-
-/* SIDEBAR */
-.sidebar{width:300px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow)}
-.sidebar-header{padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg)}
-.sidebar-title{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
-.search-box{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;transition:border-color 0.2s;box-shadow:var(--shadow)}
-.search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(14,165,233,0.1)}
-.filter-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.filter-btn{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--muted);letter-spacing:0.3px;transition:all 0.15s}
-.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
-.filter-btn.active{background:var(--accent-light);color:var(--accent-dark);border-color:var(--accent)}
-.filter-btn.fdanger{background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
-.filter-btn.fwarn{background:var(--warn-bg);color:var(--warn);border-color:#fcd34d}
-.filter-btn.fsuccess{background:var(--success-bg);color:var(--success);border-color:#86efac}
-.tower-list{flex:1;overflow-y:auto;padding:10px}
-.tower-list::-webkit-scrollbar{width:4px}
-.tower-list::-webkit-scrollbar-track{background:var(--bg)}
-.tower-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.tower-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow)}
-.tower-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-1px)}
-.tower-card.selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 3px rgba(14,165,233,0.1)}
-.tower-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.tower-id{font-family:'Courier New',monospace;font-size:12px;color:var(--accent-dark);font-weight:700}
-.tower-energy-badge{font-size:11px;font-family:'Courier New',monospace;font-weight:700}
-.tower-card-info{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.tower-tag{font-size:9px;color:var(--muted);background:var(--bg);padding:2px 8px;border-radius:20px;border:1px solid var(--border);font-weight:500}
-.tower-bar-bg{height:3px;background:var(--bg);border-radius:2px}
-.tower-bar-fill{height:100%;border-radius:2px;transition:width 0.3s}
-
-/* MAP */
-.map-wrap{flex:1;position:relative}
-#map{width:100%;height:100%}
-.leaflet-container{background:#e8f0f7}
-
-/* MAP OVERLAYS */
-.map-legend{position:absolute;bottom:20px;left:14px;background:white;border:1px solid var(--border);border-radius:10px;padding:12px 16px;z-index:999;font-size:11px;box-shadow:var(--shadow-md)}
-.legend-title{color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;font-size:9px;font-weight:600}
-.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;color:var(--text2);font-size:11px;font-weight:500}
-.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.map-stats-bar{position:absolute;top:14px;left:14px;display:flex;gap:8px;z-index:999}
-.map-stat{background:white;border:1px solid var(--border);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)}
-.map-stat-val{font-family:'Courier New',monospace;color:var(--accent-dark);font-weight:700;font-size:14px}
-.map-stat-label{color:var(--muted);font-size:10px;font-weight:500}
-
-/* DETAIL PANEL */
-.detail-panel{width:340px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:-4px 0 15px rgba(0,0,0,0.05)}
-.detail-panel.open{transform:translateX(0)}
-.detail-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg)}
-.detail-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-.close-btn{width:26px;height:26px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.15s}
-.close-btn:hover{background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
-.detail-body{flex:1;overflow-y:auto;padding:16px}
-.detail-body::-webkit-scrollbar{width:4px}
-.detail-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.status-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:14px;font-weight:600;font-size:12px}
-.detail-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.detail-kpi{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
-.detail-kpi-val{font-size:22px;font-weight:700;font-family:'Courier New',monospace;line-height:1;color:var(--text)}
-.detail-kpi-label{font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;font-weight:600}
-.detail-section{margin-bottom:16px}
-.detail-section-title{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--border)}
-.detail-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg);font-size:12px}
-.detail-row:last-child{border:none}
-.detail-key{color:var(--muted);font-weight:500}
-.detail-val{color:var(--text);font-family:'Courier New',monospace;font-size:11px;font-weight:600}
-.predict-btn{width:100%;padding:11px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;margin-top:8px;box-shadow:0 2px 4px rgba(14,165,233,0.3);transition:all 0.2s}
-.predict-btn:hover{background:var(--accent-dark);box-shadow:0 4px 8px rgba(14,165,233,0.4)}
-.predict-btn:disabled{background:var(--dim);box-shadow:none;cursor:not-allowed}
-.esmode-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px}
-.esmode-box{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:5px;text-align:center;font-size:9px;font-weight:600;color:var(--muted)}
-.esmode-box.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent-dark)}
-
-/* PAGES */
-.page{display:none;flex:1;overflow:hidden}
-.page.active{display:flex}
-
-/* STATS PAGE */
-.stats-wrap{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
-.skpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.skpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.skpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);border-radius:12px 12px 0 0}
-.skpi.warn::after{background:var(--warn)}
-.skpi.danger::after{background:var(--danger)}
-.skpi.success::after{background:var(--success)}
-.skpi-val{font-size:28px;font-weight:800;color:var(--text);font-family:'Courier New',monospace;line-height:1.1}
-.skpi.warn .skpi-val{color:var(--warn)}
-.skpi.danger .skpi-val{color:var(--danger)}
-.skpi.success .skpi-val{color:var(--success)}
-.skpi-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
-.skpi-sub{font-size:11px;color:var(--muted);margin-top:6px}
-.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
-.chart-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
-.table-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
-.tbl-header{display:grid;grid-template-columns:140px 80px 80px 70px 60px 70px 90px;gap:8px;padding:8px 0;border-bottom:2px solid var(--border);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-.tbl-row{display:grid;grid-template-columns:140px 80px 80px 70px 60px 70px 90px;gap:8px;padding:8px 0;border-bottom:1px solid var(--bg);font-size:11px;align-items:center;transition:background 0.15s;cursor:pointer}
-.tbl-row:hover{background:var(--bg);border-radius:8px;padding-left:8px}
-
-/* PREDICT PAGE */
-.predict-wrap{flex:1;padding:20px;overflow-y:auto;display:flex;gap:16px}
-.pred-form{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);max-width:480px}
-.pred-result-wrap{flex:1;display:flex;flex-direction:column;gap:12px}
-.pred-result{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:var(--shadow);transition:border-color 0.3s}
-.pred-val{font-size:64px;font-weight:800;font-family:'Courier New',monospace;line-height:1;transition:color 0.3s}
-.pred-unit{font-size:11px;color:var(--muted);letter-spacing:3px;margin-top:4px;font-weight:600;text-transform:uppercase}
-.pred-status{font-size:12px;margin-top:12px;padding:8px 16px;border-radius:20px;display:inline-block;font-weight:600}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.fg{display:flex;flex-direction:column;gap:5px}
-.fg label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-.fg input{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Courier New',monospace;font-size:13px;font-weight:600;outline:none;transition:all 0.2s}
-.fg input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(14,165,233,0.1)}
-
-/* BADGE */
-.badge{padding:3px 10px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.brand-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.brand-icon svg{width:15px;height:15px;fill:#fff}
+.brand-name{font-size:14px;font-weight:700}
+.brand-sub{font-size:9px;color:var(--muted)}
+.topbar-stats{display:flex;gap:10px;align-items:center}
+.ts{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 12px;text-align:center}
+.ts-val{font-size:16px;font-weight:700;font-family:'Courier New',monospace;line-height:1}
+.ts-label{font-size:8px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase}
+.badge{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:600}
 .badge-blue{background:var(--accent-light);color:var(--accent-dark);border:1px solid #bae6fd}
 .badge-green{background:var(--success-bg);color:var(--success);border:1px solid #86efac}
 .badge-warn{background:var(--warn-bg);color:var(--warn);border:1px solid #fcd34d}
 .badge-danger{background:var(--danger-bg);color:var(--danger);border:1px solid #fca5a5}
+.badge-purple{background:var(--purple-bg);color:var(--purple);border:1px solid #c4b5fd}
+.live{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--success)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* MAIN */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:280px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sidebar-header{padding:12px 14px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0}
+.sidebar-title{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.search{width:100%;background:#fff;border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:12px;outline:none}
+.search:focus{border-color:var(--accent)}
+.filters{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.filter-btn{padding:3px 10px;border-radius:20px;font-size:9px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--muted)}
+.filter-btn.active{background:var(--accent-light);color:var(--accent-dark);border-color:var(--accent)}
+.filter-btn.fdanger{background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
+.filter-btn.fwarn{background:var(--warn-bg);color:var(--warn);border-color:#fcd34d}
+.filter-btn.fok{background:var(--success-bg);color:var(--success);border-color:#86efac}
+.tower-list{flex:1;overflow-y:auto;padding:8px}
+.tower-list::-webkit-scrollbar{width:3px}
+.tower-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tower-card{background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow)}
+.tower-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.tower-card.selected{border-color:var(--accent);background:var(--accent-light)}
+.tower-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.tower-id{font-family:'Courier New',monospace;font-size:11px;color:var(--accent-dark);font-weight:700}
+.tower-energy{font-size:11px;font-family:'Courier New',monospace;font-weight:700}
+.tower-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.tower-tag{font-size:8px;color:var(--muted);background:var(--bg);padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+.tower-bar-bg{height:3px;background:var(--bg);border-radius:2px}
+.tower-bar-fill{height:100%;border-radius:2px}
+
+/* MAP */
+.map-area{flex:1;position:relative}
+#map{width:100%;height:100%}
+.map-legend{position:absolute;bottom:20px;left:14px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;z-index:999;font-size:11px;box-shadow:var(--shadow-md)}
+.legend-title{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;color:var(--text);font-size:11px;font-weight:500}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.map-hint{position:absolute;top:14px;left:14px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;z-index:999;font-size:11px;color:var(--muted);box-shadow:var(--shadow)}
+
+/* ANALYTICS PANEL */
+.analytics-panel{width:0;background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;transition:width 0.35s cubic-bezier(0.4,0,0.2,1);box-shadow:-4px 0 20px rgba(0,0,0,0.06)}
+.analytics-panel.open{width:520px}
+.panel-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg)}
+.panel-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.close-btn{width:24px;height:24px;background:#fff;border:1px solid var(--border);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
+.close-btn:hover{background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
+
+/* PANEL TABS */
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);background:#fff;flex-shrink:0;overflow-x:auto}
+.panel-tab{padding:9px 14px;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:0.5px;text-transform:uppercase}
+.panel-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.panel-body{flex:1;overflow-y:auto;padding:16px}
+.panel-body::-webkit-scrollbar{width:4px}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* TAB CONTENT */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* TOWER INFO HEADER */
+.tower-info-header{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);border-radius:12px;padding:18px;color:#fff;margin-bottom:16px}
+.tih-id{font-family:'Courier New',monospace;font-size:18px;font-weight:800;letter-spacing:1px}
+.tih-city{font-size:12px;opacity:0.85;margin-top:2px}
+.tih-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.tih-kpi{background:rgba(255,255,255,0.15);border-radius:8px;padding:8px;text-align:center}
+.tih-kpi-val{font-size:20px;font-weight:700;font-family:'Courier New',monospace}
+.tih-kpi-label{font-size:8px;opacity:0.8;letter-spacing:0.5px;text-transform:uppercase;margin-top:2px}
+
+/* STATUS BANNER */
+.status-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:14px;font-weight:600;font-size:12px}
+
+/* INFO ROWS */
+.info-section{margin-bottom:16px}
+.info-section-title{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid var(--border)}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg);font-size:12px}
+.info-row:last-child{border:none}
+.info-key{color:var(--muted);font-weight:500}
+.info-val{font-family:'Courier New',monospace;font-size:11px;font-weight:600;color:var(--text)}
+
+/* ESMODE */
+.esmode-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px}
+.esmode-box{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:5px;text-align:center;font-size:9px;font-weight:600;color:var(--muted)}
+.esmode-box.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent-dark)}
+
+/* PREDICT BTN */
+.predict-btn{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;margin-top:8px;box-shadow:0 2px 4px rgba(14,165,233,0.3)}
+.predict-btn:hover{background:var(--accent-dark)}
+.predict-btn:disabled{background:var(--muted);box-shadow:none;cursor:not-allowed}
+
+/* RESULT BOX */
+.result-box{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:18px;text-align:center;transition:border-color 0.3s;margin-top:10px}
+.result-val{font-size:48px;font-weight:800;font-family:'Courier New',monospace;line-height:1;transition:color 0.3s}
+.result-unit{font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:4px;font-weight:600}
+.result-status{font-size:11px;margin-top:10px;padding:6px 14px;border-radius:20px;display:inline-block;font-weight:600}
+
+/* PROGRESS */
+.prog-item{margin-bottom:10px}
+.prog-top{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}
+.prog-label{color:var(--muted)}
+.prog-val{font-family:'Courier New',monospace;font-weight:600;color:var(--text)}
+.prog-bg{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width 0.5s}
+
+/* CHARTS */
+canvas{max-height:220px}
+
+/* SHAP BARS */
+.shap-bar-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:11px}
+.shap-label{width:120px;color:var(--text);font-family:'Courier New',monospace;font-size:10px;text-align:right;flex-shrink:0}
+.shap-bar-bg{flex:1;height:14px;background:var(--bg);border-radius:3px;overflow:hidden}
+.shap-bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:6px;font-size:9px;color:#fff;font-weight:600;transition:width 0.5s}
+.shap-val{width:40px;color:var(--muted);font-size:9px;font-family:'Courier New',monospace}
 </style>
 </head>
 <body>
@@ -183,215 +162,209 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="brand">
-    <div class="brand-icon">
-      <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-    </div>
-    <div>
-      <div class="brand-name">SmartNetEnergy</div>
-      <div class="brand-sub">5G Tower Intelligence Platform — Tunisia</div>
-    </div>
+    <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+    <div><div class="brand-name">SmartNetEnergy</div><div class="brand-sub">5G Tower Intelligence — Tunisia</div></div>
   </div>
-  <div class="topbar-right">
-    <div class="kpi-mini"><div class="kpi-mini-val">24</div><div class="kpi-mini-label">Towers</div></div>
-    <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--danger)" id="top-crit">3</div><div class="kpi-mini-label">Critical</div></div>
-    <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--warn)" id="top-warn">5</div><div class="kpi-mini-label">Warning</div></div>
-    <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--success)" id="top-ok">16</div><div class="kpi-mini-label">Normal</div></div>
-    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-    <div class="time-display" id="clock">--:--:--</div>
+  <div class="topbar-stats">
+    <div class="ts"><div class="ts-val">24</div><div class="ts-label">Towers</div></div>
+    <div class="ts"><div class="ts-val" style="color:var(--danger)" id="top-crit">3</div><div class="ts-label">Critical</div></div>
+    <div class="ts"><div class="ts-val" style="color:var(--warn)" id="top-warn">5</div><div class="ts-label">Warning</div></div>
+    <div class="ts"><div class="ts-val" style="color:var(--success)" id="top-ok">16</div><div class="ts-label">Normal</div></div>
+    <div class="ts"><div class="ts-val" style="color:var(--purple)">~2W</div><div class="ts-label">MAE G1</div></div>
+    <div class="ts"><div class="ts-val" style="color:var(--success)">>0.96</div><div class="ts-label">R² G1</div></div>
+    <div class="live"><div class="live-dot"></div>LIVE</div>
   </div>
 </div>
 
-<!-- NAV -->
-<nav class="nav">
-  <div class="nav-item active" onclick="switchPage('map',this)">🗺️ Tower Map</div>
-  <div class="nav-item" onclick="switchPage('stats',this)">📊 Statistics</div>
-  <div class="nav-item" onclick="switchPage('predict',this)">⚡ Prediction</div>
-</nav>
+<!-- MAIN -->
+<div class="main">
 
-<!-- MAP PAGE -->
-<div id="page-map" class="page active">
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">Tower Directory</div>
-      <input class="search-box" placeholder="🔍 Search tower, city, vendor..." id="search" oninput="filterTowers()">
-      <div class="filter-row">
-        <div class="filter-btn active" onclick="setFilter('all',this)">All</div>
+      <input class="search" placeholder="🔍 Rechercher tour, ville, vendor..." id="search" oninput="filterTowers()">
+      <div class="filters">
+        <div class="filter-btn active" onclick="setFilter('all',this)">Tous</div>
         <div class="filter-btn fdanger" onclick="setFilter('critical',this)">Critical</div>
         <div class="filter-btn fwarn" onclick="setFilter('warning',this)">Warning</div>
-        <div class="filter-btn fsuccess" onclick="setFilter('normal',this)">Normal</div>
+        <div class="filter-btn fok" onclick="setFilter('normal',this)">Normal</div>
       </div>
     </div>
     <div class="tower-list" id="tower-list"></div>
   </div>
 
-  <div class="map-wrap">
+  <!-- MAP -->
+  <div class="map-area">
     <div id="map"></div>
-    <div class="map-stats-bar">
-      <div class="map-stat"><span class="map-stat-val">24</span><span class="map-stat-label">Towers monitored</span></div>
-      <div class="map-stat"><span class="map-stat-val" id="ms-avg" style="color:var(--accent)">—</span><span class="map-stat-label">Avg consumption</span></div>
-    </div>
+    <div class="map-hint">📍 Cliquez sur une tour pour voir son analyse détaillée</div>
     <div class="map-legend">
-      <div class="legend-title">Energy status</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>Critical (&gt;700W)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div>Warning (400–700W)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>Normal (&lt;400W)</div>
+      <div class="legend-title">Statut energetique</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>Critique (&gt;70W)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div>Attention (40–70W)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>Normal (&lt;40W)</div>
     </div>
   </div>
 
-  <div class="detail-panel" id="detail-panel">
-    <div class="detail-header">
-      <span class="detail-title">Tower details</span>
-      <button class="close-btn" onclick="closeDetail()">×</button>
+  <!-- ANALYTICS PANEL -->
+  <div class="analytics-panel" id="analytics-panel">
+    <div class="panel-header">
+      <span class="panel-title" id="panel-title">Analyse de la tour</span>
+      <button class="close-btn" onclick="closePanel()">×</button>
     </div>
-    <div class="detail-body" id="detail-body"></div>
-  </div>
-</div>
+    <div class="panel-tabs">
+      <div class="panel-tab active" onclick="switchTab('info',this)">Détails</div>
+      <div class="panel-tab" onclick="switchTab('prediction',this)">Prédiction</div>
+      <div class="panel-tab" onclick="switchTab('performance',this)">Performance</div>
+      <div class="panel-tab" onclick="switchTab('shap',this)">SHAP</div>
+      <div class="panel-tab" onclick="switchTab('scatter',this)">Scatter</div>
+    </div>
+    <div class="panel-body">
 
-<!-- STATS PAGE -->
-<div id="page-stats" class="page">
-  <div class="stats-wrap">
-    <div class="skpi-grid">
-      <div class="skpi"><div class="skpi-label">Total towers</div><div class="skpi-val">24</div><div class="skpi-sub">Across Tunisia</div></div>
-      <div class="skpi danger"><div class="skpi-label">Avg consumption</div><div class="skpi-val" id="s-avg">—</div><div class="skpi-sub">watts per tower</div></div>
-      <div class="skpi warn"><div class="skpi-label">Peak consumption</div><div class="skpi-val" id="s-peak">—</div><div class="skpi-sub">highest tower</div></div>
-      <div class="skpi success"><div class="skpi-label">ESMode savings</div><div class="skpi-val">21%</div><div class="skpi-sub">vs no ESMode</div></div>
-    </div>
-    <div class="charts-row">
-      <div class="chart-card"><div class="chart-title">Energy by city</div><canvas id="chart-city"></canvas></div>
-      <div class="chart-card"><div class="chart-title">Status distribution</div><canvas id="chart-status"></canvas></div>
-      <div class="chart-card"><div class="chart-title">Load vs energy</div><canvas id="chart-load"></canvas></div>
-    </div>
-    <div class="table-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <span style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase">All Towers</span>
-        <span class="badge badge-blue">24 towers</span>
+      <!-- TAB : INFO -->
+      <div class="tab-content active" id="tab-info">
+        <div id="tower-info-content"></div>
       </div>
-      <div class="tbl-header"><span>Tower ID</span><span>City</span><span>Vendor</span><span>Freq</span><span>Load</span><span>Energy</span><span>Status</span></div>
-      <div id="full-table"></div>
-    </div>
-  </div>
-</div>
 
-<!-- PREDICT PAGE -->
-<div id="page-predict" class="page">
-  <div class="predict-wrap">
-    <div class="pred-form">
-      <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)">Manual Prediction</div>
-      <div class="form-row">
-        <div class="fg"><label>Traffic load (Mbps)</label><input id="p_tl" type="number" value="1200"></div>
-        <div class="fg"><label>Antenna count</label><input id="p_ac" type="number" value="64"></div>
+      <!-- TAB : PREDICTION -->
+      <div class="tab-content" id="tab-prediction">
+        <div id="pred-content"></div>
       </div>
-      <div class="form-row">
-        <div class="fg"><label>Bandwidth (MHz)</label><input id="p_bw" type="number" value="100"></div>
-        <div class="fg"><label>TX Power (dBm)</label><input id="p_tp" type="number" value="43"></div>
-      </div>
-      <div class="form-row">
-        <div class="fg"><label>Frequency (MHz)</label><input id="p_fr" type="number" value="3500"></div>
-        <div class="fg"><label>ESMode active (0-6)</label><input id="p_es" type="number" value="2" min="0" max="6"></div>
-      </div>
-      <button onclick="runPredict()" id="pbtn" style="width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 4px rgba(14,165,233,0.3);transition:all 0.2s;margin-top:4px">
-        ⚡ Predict Energy Consumption
-      </button>
-    </div>
-    <div class="pred-result-wrap">
-      <div class="pred-result" id="presult">
-        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px">Prediction Result</div>
-        <div class="pred-val" id="presult-val" style="color:var(--dim)">—</div>
-        <div class="pred-unit">Watts</div>
-        <div class="pred-status" id="presult-status" style="background:var(--bg);color:var(--muted)">Enter parameters and run prediction</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)">
-        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">API Information</div>
-        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
-          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--muted)">Endpoint</span><span style="font-family:'Courier New',monospace;color:var(--accent-dark);font-size:10px">POST /predict</span></div>
-          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--muted)">Status</span><span class="badge badge-green">ONLINE</span></div>
-          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--muted)">Model</span><span class="badge badge-warn">DEMO MODE</span></div>
-          <div style="display:flex;justify-content:space-between;padding:7px 0"><span style="color:var(--muted)">Hosted on</span><span style="font-family:'Courier New',monospace;color:var(--muted);font-size:10px">Azure Container Apps</span></div>
+
+      <!-- TAB : PERFORMANCE -->
+      <div class="tab-content" id="tab-performance">
+        <div style="margin-bottom:14px">
+          <div class="info-section-title">Comparaison des modèles — G1</div>
+          <canvas id="chart-models"></canvas>
+        </div>
+        <div style="margin-bottom:14px">
+          <div class="info-section-title">Rapport de généralisation</div>
+          <canvas id="chart-gen"></canvas>
+        </div>
+        <div>
+          <div class="info-section-title">Tableau des résultats</div>
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <tr style="background:var(--accent);color:#fff">
+              <th style="padding:8px;text-align:left">Modèle</th>
+              <th style="padding:8px">MAE (W)</th>
+              <th style="padding:8px">R²</th>
+            </tr>
+            <tr style="background:var(--bg)"><td style="padding:7px">Random Forest</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace">2.48</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace">0.952</td></tr>
+            <tr><td style="padding:7px">LightGBM</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace">2.23</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace">0.959</td></tr>
+            <tr style="background:var(--bg)"><td style="padding:7px">CatBoost</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace">2.15</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace">0.961</td></tr>
+            <tr style="background:#dcfce7"><td style="padding:7px;font-weight:700">⭐ Stacking</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">2.02</td><td style="padding:7px;text-align:center;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">0.964</td></tr>
+          </table>
         </div>
       </div>
+
+      <!-- TAB : SHAP -->
+      <div class="tab-content" id="tab-shap">
+        <div class="info-section-title" style="margin-bottom:12px">Importance des features — SHAP (LightGBM)</div>
+        <div id="shap-bars"></div>
+        <div style="margin-top:20px">
+          <div class="info-section-title">Contribution par catégorie</div>
+          <canvas id="chart-shap-cat"></canvas>
+        </div>
+        <div style="margin-top:16px;background:var(--purple-bg);border:1px solid #c4b5fd;border-radius:10px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px">💡 Pourquoi RUType est la feature #1</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.6">Le type de Radio Unit encode implicitement l'efficacité de l'amplificateur de puissance, la technologie de refroidissement et l'architecture MIMO. Le ratio de consommation max/min entre RUTypes atteint 2.9×, ce qui en fait le principal déterminant de la consommation énergétique.</div>
+        </div>
+      </div>
+
+      <!-- TAB : SCATTER -->
+      <div class="tab-content" id="tab-scatter">
+        <div style="margin-bottom:14px">
+          <div class="info-section-title">Prédictions vs Valeurs réelles (Watts)</div>
+          <canvas id="chart-scatter"></canvas>
+        </div>
+        <div>
+          <div class="info-section-title">Distribution des résidus</div>
+          <canvas id="chart-residus"></canvas>
+        </div>
+        <div style="margin-top:14px;background:var(--success-bg);border:1px solid #86efac;border-radius:10px;padding:12px;font-size:11px">
+          <b style="color:var(--success)">Analyse des résidus :</b> Les erreurs sont centrées autour de 0 (biais minimal). Légère surestimation en heures de pointe (17h–21h). 96% des points se situent à moins de ±5W de la diagonale parfaite.
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
-const API = "https://smartnetenergy-api.gentlesmoke-2dbdff9e.germanywestcentral.azurecontainerapps.io";
-
+const API = 'https://smartnetenergy-api.gentlesmoke-2dbdff9e.germanywestcentral.azurecontainerapps.io';
 const towers = [
-  {id:'TN-TUN-001',city:'Tunis',lat:36.8065,lng:10.1815,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:43,load:1800,esmode:[1,1,0,0,1,0],energy:720,status:'warning'},
-  {id:'TN-TUN-002',city:'Tunis',lat:36.8190,lng:10.1660,vendor:'Ericsson',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:900,esmode:[1,1,1,0,0,0],energy:380,status:'normal'},
-  {id:'TN-TUN-003',city:'Tunis',lat:36.7920,lng:10.2100,vendor:'Nokia',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:46,load:2400,esmode:[0,0,0,0,0,0],energy:890,status:'critical'},
-  {id:'TN-SFX-001',city:'Sfax',lat:34.7406,lng:10.7603,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:32,tx:43,load:1200,esmode:[1,1,0,1,0,0],energy:540,status:'warning'},
-  {id:'TN-SFX-002',city:'Sfax',lat:34.7200,lng:10.7800,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:500,esmode:[1,1,1,1,0,0],energy:220,status:'normal'},
-  {id:'TN-SFS-001',city:'Sousse',lat:35.8256,lng:10.6369,vendor:'Nokia',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:45,load:2000,esmode:[0,0,0,0,0,0],energy:840,status:'critical'},
-  {id:'TN-SFS-002',city:'Sousse',lat:35.8100,lng:10.6500,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:41,load:800,esmode:[1,1,1,0,0,0],energy:350,status:'normal'},
-  {id:'TN-MON-001',city:'Monastir',lat:35.7643,lng:10.8113,vendor:'Ericsson',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:43,load:1400,esmode:[1,0,0,0,1,0],energy:610,status:'warning'},
-  {id:'TN-NAB-001',city:'Nabeul',lat:36.4513,lng:10.7357,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:700,esmode:[1,1,1,0,0,0],energy:310,status:'normal'},
-  {id:'TN-BIZ-001',city:'Bizerte',lat:37.2744,lng:9.8739,vendor:'Nokia',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:44,load:1600,esmode:[0,1,0,0,0,0],energy:680,status:'warning'},
-  {id:'TN-GAB-001',city:'Gabes',lat:33.8881,lng:10.0975,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:400,esmode:[1,1,1,1,1,0],energy:175,status:'normal'},
-  {id:'TN-GAB-002',city:'Gabes',lat:33.9000,lng:10.1100,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:32,tx:43,load:1100,esmode:[1,0,0,0,0,0],energy:490,status:'warning'},
-  {id:'TN-KAI-001',city:'Kairouan',lat:35.6781,lng:10.0966,vendor:'Nokia',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:41,load:600,esmode:[1,1,0,0,0,0],energy:270,status:'normal'},
-  {id:'TN-GFS-001',city:'Gafsa',lat:34.4250,lng:8.7842,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:37,load:300,esmode:[1,1,1,1,1,1],energy:140,status:'normal'},
-  {id:'TN-TAT-001',city:'Tataouine',lat:32.9211,lng:10.4511,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:16,tx:39,load:250,esmode:[1,1,1,1,0,0],energy:165,status:'normal'},
-  {id:'TN-MEO-001',city:'Médenine',lat:33.3399,lng:10.4896,vendor:'Nokia',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:350,esmode:[1,1,0,0,0,0],energy:195,status:'normal'},
-  {id:'TN-JEN-001',city:'Jendouba',lat:36.5012,lng:8.7803,vendor:'Ericsson',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:550,esmode:[1,1,1,0,0,0],energy:245,status:'normal'},
-  {id:'TN-SIL-001',city:'Siliana',lat:36.0840,lng:9.3746,vendor:'Huawei',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:280,esmode:[1,1,1,1,0,0],energy:158,status:'normal'},
-  {id:'TN-KEF-001',city:'Le Kef',lat:36.1822,lng:8.7146,vendor:'Nokia',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:41,load:450,esmode:[1,1,0,0,0,0],energy:208,status:'normal'},
-  {id:'TN-ARY-001',city:'Aryanah',lat:36.8626,lng:10.1956,vendor:'Ericsson',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:45,load:2100,esmode:[0,0,0,0,0,0],energy:875,status:'critical'},
-  {id:'TN-MNB-001',city:'Manouba',lat:36.8090,lng:10.0983,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:43,load:1700,esmode:[1,0,0,0,0,0],energy:730,status:'warning'},
-  {id:'TN-ZAG-001',city:'Zaghouan',lat:36.4025,lng:10.1430,vendor:'Nokia',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:650,esmode:[1,1,1,0,0,0],energy:290,status:'normal'},
-  {id:'TN-TOZ-001',city:'Tozeur',lat:33.9197,lng:8.1335,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:37,load:200,esmode:[1,1,1,1,1,0],energy:130,status:'normal'},
-  {id:'TN-TAB-001',city:'Tabarka',lat:36.9542,lng:8.7576,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:420,esmode:[1,1,0,0,0,0],energy:195,status:'normal'},
+  {id:'TN-TUN-001',city:'Tunis',lat:36.8065,lng:10.1815,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:43,load:1800,esmode:[1,1,0,0,1,0],energy:72,status:'warning'},
+  {id:'TN-TUN-002',city:'Tunis',lat:36.8190,lng:10.1660,vendor:'Ericsson',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:900,esmode:[1,1,1,0,0,0],energy:38,status:'normal'},
+  {id:'TN-TUN-003',city:'Tunis',lat:36.7920,lng:10.2100,vendor:'Nokia',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:46,load:2400,esmode:[0,0,0,0,0,0],energy:89,status:'critical'},
+  {id:'TN-SFX-001',city:'Sfax',lat:34.7406,lng:10.7603,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:32,tx:43,load:1200,esmode:[1,1,0,1,0,0],energy:54,status:'warning'},
+  {id:'TN-SFX-002',city:'Sfax',lat:34.7200,lng:10.7800,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:500,esmode:[1,1,1,1,0,0],energy:22,status:'normal'},
+  {id:'TN-SFS-001',city:'Sousse',lat:35.8256,lng:10.6369,vendor:'Nokia',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:45,load:2000,esmode:[0,0,0,0,0,0],energy:84,status:'critical'},
+  {id:'TN-SFS-002',city:'Sousse',lat:35.8100,lng:10.6500,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:41,load:800,esmode:[1,1,1,0,0,0],energy:35,status:'normal'},
+  {id:'TN-MON-001',city:'Monastir',lat:35.7643,lng:10.8113,vendor:'Ericsson',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:43,load:1400,esmode:[1,0,0,0,1,0],energy:61,status:'warning'},
+  {id:'TN-NAB-001',city:'Nabeul',lat:36.4513,lng:10.7357,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:700,esmode:[1,1,1,0,0,0],energy:31,status:'normal'},
+  {id:'TN-BIZ-001',city:'Bizerte',lat:37.2744,lng:9.8739,vendor:'Nokia',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:44,load:1600,esmode:[0,1,0,0,0,0],energy:68,status:'warning'},
+  {id:'TN-GAB-001',city:'Gabes',lat:33.8881,lng:10.0975,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:400,esmode:[1,1,1,1,1,0],energy:18,status:'normal'},
+  {id:'TN-GAB-002',city:'Gabes',lat:33.9000,lng:10.1100,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:32,tx:43,load:1100,esmode:[1,0,0,0,0,0],energy:49,status:'warning'},
+  {id:'TN-KAI-001',city:'Kairouan',lat:35.6781,lng:10.0966,vendor:'Nokia',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:41,load:600,esmode:[1,1,0,0,0,0],energy:27,status:'normal'},
+  {id:'TN-GFS-001',city:'Gafsa',lat:34.4250,lng:8.7842,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:37,load:300,esmode:[1,1,1,1,1,1],energy:14,status:'normal'},
+  {id:'TN-TAT-001',city:'Tataouine',lat:32.9211,lng:10.4511,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:16,tx:39,load:250,esmode:[1,1,1,1,0,0],energy:17,status:'normal'},
+  {id:'TN-MEO-001',city:'Medenine',lat:33.3399,lng:10.4896,vendor:'Nokia',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:350,esmode:[1,1,0,0,0,0],energy:20,status:'normal'},
+  {id:'TN-JEN-001',city:'Jendouba',lat:36.5012,lng:8.7803,vendor:'Ericsson',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:550,esmode:[1,1,1,0,0,0],energy:25,status:'normal'},
+  {id:'TN-SIL-001',city:'Siliana',lat:36.0840,lng:9.3746,vendor:'Huawei',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:38,load:280,esmode:[1,1,1,1,0,0],energy:16,status:'normal'},
+  {id:'TN-KEF-001',city:'Le Kef',lat:36.1822,lng:8.7146,vendor:'Nokia',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:41,load:450,esmode:[1,1,0,0,0,0],energy:21,status:'normal'},
+  {id:'TN-ARY-001',city:'Aryanah',lat:36.8626,lng:10.1956,vendor:'Ericsson',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:45,load:2100,esmode:[0,0,0,0,0,0],energy:88,status:'critical'},
+  {id:'TN-MNB-001',city:'Manouba',lat:36.8090,lng:10.0983,vendor:'Huawei',mode:'5G NR',freq:3500,bw:100,antennas:64,tx:43,load:1700,esmode:[1,0,0,0,0,0],energy:73,status:'warning'},
+  {id:'TN-ZAG-001',city:'Zaghouan',lat:36.4025,lng:10.1430,vendor:'Nokia',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:650,esmode:[1,1,1,0,0,0],energy:29,status:'normal'},
+  {id:'TN-TOZ-001',city:'Tozeur',lat:33.9197,lng:8.1335,vendor:'Ericsson',mode:'5G NR',freq:2100,bw:60,antennas:16,tx:37,load:200,esmode:[1,1,1,1,1,0],energy:13,status:'normal'},
+  {id:'TN-TAB-001',city:'Tabarka',lat:36.9542,lng:8.7576,vendor:'Huawei',mode:'5G NR',freq:2600,bw:80,antennas:32,tx:40,load:420,esmode:[1,1,0,0,0,0],energy:20,status:'normal'},
 ];
 
-let currentFilter='all', selectedTower=null, markers={};
-let chartCity=null,chartStatus=null,chartLoad=null;
+let currentFilter='all', selectedTower=null, markers={}, chartInst={};
 
-function sColor(s){return s==='critical'?'#dc2626':s==='warning'?'#d97706':'#16a34a'}
-function sBg(s){return s==='critical'?'#fee2e2':s==='warning'?'#fef3c7':'#dcfce7'}
+function sColor(s){ return s==='critical'?'#dc2626':s==='warning'?'#d97706':'#16a34a' }
+function sBg(s){ return s==='critical'?'#fee2e2':s==='warning'?'#fef3c7':'#dcfce7' }
+function sBadge(s){ return s==='critical'?'badge-danger':s==='warning'?'badge-warn':'badge-green' }
 
-// MAP
+// ── MAP ──
 const map = L.map('map',{zoomControl:true}).setView([34.0,9.0],6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
 
-function createIcon(t){
+function mkIcon(t){
   const c=sColor(t.status), size=t.status==='critical'?20:t.status==='warning'?16:13;
   return L.divIcon({
-    html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${c};border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.25),0 0 0 2px ${c}44"></div>`,
+    html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${c};border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25),0 0 0 2px ${c}44;cursor:pointer"></div>`,
     className:'',iconSize:[size,size],iconAnchor:[size/2,size/2]
   });
 }
 
-towers.forEach(t=>{
-  const m=L.marker([t.lat,t.lng],{icon:createIcon(t)}).addTo(map);
-  m.bindTooltip(`<div style="font-family:system-ui;font-size:12px"><b>${t.id}</b><br><span style="color:${sColor(t.status)};font-weight:600">${t.energy}W</span> — ${t.city}</div>`,{direction:'top'});
+towers.forEach(t => {
+  const m = L.marker([t.lat,t.lng],{icon:mkIcon(t)}).addTo(map);
+  m.bindTooltip(`<div style="font-family:system-ui;font-size:12px;padding:2px"><b>${t.id}</b><br><span style="color:${sColor(t.status)};font-weight:600">${t.energy}W</span> — ${t.city}</div>`,{direction:'top'});
   m.on('click',()=>selectTower(t));
   markers[t.id]=m;
 });
 
-const avg=Math.round(towers.reduce((s,t)=>s+t.energy,0)/towers.length);
-document.getElementById('ms-avg').textContent=avg+'W';
-
+// ── SIDEBAR ──
 function renderList(list){
-  document.getElementById('tower-list').innerHTML=list.map(t=>`
+  document.getElementById('tower-list').innerHTML = list.map(t=>`
     <div class="tower-card${selectedTower?.id===t.id?' selected':''}" onclick="selectTower(towers.find(x=>x.id==='${t.id}'))">
-      <div class="tower-card-top">
+      <div class="tower-top">
         <span class="tower-id">${t.id}</span>
-        <span class="tower-energy-badge" style="color:${sColor(t.status)}">${t.energy}W</span>
+        <span class="tower-energy" style="color:${sColor(t.status)}">${t.energy}W</span>
       </div>
-      <div class="tower-card-info">
+      <div class="tower-tags">
         <span class="tower-tag">${t.city}</span>
         <span class="tower-tag">${t.vendor}</span>
         <span class="tower-tag">${t.freq}MHz</span>
+        <span class="badge ${sBadge(t.status)}" style="font-size:8px">${t.status}</span>
       </div>
-      <div class="tower-bar-bg">
-        <div class="tower-bar-fill" style="width:${Math.min(100,Math.round((t.energy/1000)*100))}%;background:${sColor(t.status)}"></div>
-      </div>
+      <div class="tower-bar-bg"><div class="tower-bar-fill" style="width:${Math.min(100,Math.round((t.energy/100)*100))}%;background:${sColor(t.status)}"></div></div>
     </div>`).join('');
 }
 
 function filterTowers(){
-  const q=document.getElementById('search').value.toLowerCase();
-  let list=towers;
+  const q = document.getElementById('search').value.toLowerCase();
+  let list = towers;
   if(currentFilter!=='all') list=list.filter(t=>t.status===currentFilter);
   if(q) list=list.filter(t=>t.id.toLowerCase().includes(q)||t.city.toLowerCase().includes(q)||t.vendor.toLowerCase().includes(q));
   renderList(list);
@@ -404,129 +377,250 @@ function setFilter(f,el){
   filterTowers();
 }
 
+// ── SELECT TOWER ──
 function selectTower(t){
   selectedTower=t;
   filterTowers();
   map.flyTo([t.lat,t.lng],13,{duration:1.2});
+  document.getElementById('analytics-panel').classList.add('open');
+  document.getElementById('panel-title').textContent=t.id;
+  setTimeout(()=>map.invalidateSize(),350);
+
+  // Reset to first tab
+  document.querySelectorAll('.tab-content').forEach(tc=>tc.classList.remove('active'));
+  document.querySelectorAll('.panel-tab').forEach(pt=>pt.classList.remove('active'));
+  document.getElementById('tab-info').classList.add('active');
+  document.querySelector('.panel-tab').classList.add('active');
+
+  renderTowerInfo(t);
+  renderPredTab(t);
+  initPerfCharts();
+  initShapContent();
+  initScatterContent();
+}
+
+// ── TOWER INFO TAB ──
+function renderTowerInfo(t){
   const c=sColor(t.status), bg=sBg(t.status);
-  const statusText=t.status==='critical'?'Critical — Immediate action required':t.status==='warning'?'Warning — Monitor closely':'Normal — Operating efficiently';
-  document.getElementById('detail-body').innerHTML=`
+  const statusText = t.status==='critical'?'Critique — Intervention immediate requise':t.status==='warning'?'Attention — Surveillance rapprochee':'Normal — Fonctionnement efficace';
+  const esModes = t.esmode.map((v,i)=>`<div class="esmode-box${v?' on':''}">ES${i+1}</div>`).join('');
+
+  document.getElementById('tower-info-content').innerHTML=`
+    <div class="tower-info-header">
+      <div class="tih-id">${t.id}</div>
+      <div class="tih-city">${t.city} · ${t.vendor} · ${t.mode}</div>
+      <div class="tih-kpis">
+        <div class="tih-kpi"><div class="tih-kpi-val">${t.energy}</div><div class="tih-kpi-label">Watts</div></div>
+        <div class="tih-kpi"><div class="tih-kpi-val">${t.load}</div><div class="tih-kpi-label">Mbps</div></div>
+        <div class="tih-kpi"><div class="tih-kpi-val">${t.esmode.filter(v=>v).length}/6</div><div class="tih-kpi-label">ESMode</div></div>
+      </div>
+    </div>
+
     <div class="status-banner" style="background:${bg};color:${c};border:1px solid ${c}44">
       <div style="width:8px;height:8px;border-radius:50%;background:${c};flex-shrink:0"></div>
       ${statusText}
     </div>
-    <div class="detail-kpi-grid">
-      <div class="detail-kpi"><div class="detail-kpi-val" style="color:${c}">${t.energy}</div><div class="detail-kpi-label">Watts</div></div>
-      <div class="detail-kpi"><div class="detail-kpi-val" style="color:var(--accent-dark)">${t.load}</div><div class="detail-kpi-label">Traffic (Mbps)</div></div>
-      <div class="detail-kpi"><div class="detail-kpi-val">${t.antennas}</div><div class="detail-kpi-label">Antennas</div></div>
-      <div class="detail-kpi"><div class="detail-kpi-val">${t.esmode.filter(v=>v).length}/6</div><div class="detail-kpi-label">ESMode</div></div>
+
+    <div class="info-section">
+      <div class="info-section-title">Identite de la tour</div>
+      <div class="info-row"><span class="info-key">Tower ID</span><span class="info-val">${t.id}</span></div>
+      <div class="info-row"><span class="info-key">Ville</span><span class="info-val">${t.city}</span></div>
+      <div class="info-row"><span class="info-key">Vendeur</span><span class="info-val">${t.vendor}</span></div>
+      <div class="info-row"><span class="info-key">Mode</span><span class="info-val">${t.mode}</span></div>
+      <div class="info-row"><span class="info-key">Coordonnees</span><span class="info-val">${t.lat.toFixed(4)}, ${t.lng.toFixed(4)}</span></div>
     </div>
-    <div class="detail-section">
-      <div class="detail-section-title">Tower Identity</div>
-      <div class="detail-row"><span class="detail-key">Tower ID</span><span class="detail-val">${t.id}</span></div>
-      <div class="detail-row"><span class="detail-key">City</span><span class="detail-val">${t.city}</span></div>
-      <div class="detail-row"><span class="detail-key">Vendor</span><span class="detail-val">${t.vendor}</span></div>
-      <div class="detail-row"><span class="detail-key">Mode</span><span class="detail-val">${t.mode}</span></div>
-      <div class="detail-row"><span class="detail-key">Coordinates</span><span class="detail-val">${t.lat.toFixed(4)}, ${t.lng.toFixed(4)}</span></div>
+
+    <div class="info-section">
+      <div class="info-section-title">Configuration RF</div>
+      <div class="info-row"><span class="info-key">Frequence</span><span class="info-val">${t.freq} MHz</span></div>
+      <div class="info-row"><span class="info-key">Bande passante</span><span class="info-val">${t.bw} MHz</span></div>
+      <div class="info-row"><span class="info-key">Antennes MIMO</span><span class="info-val">${t.antennas}</span></div>
+      <div class="info-row"><span class="info-key">TX Power</span><span class="info-val">${t.tx} dBm</span></div>
+      <div class="info-row"><span class="info-key">Charge reseau</span><span class="info-val">${t.load} Mbps</span></div>
     </div>
-    <div class="detail-section">
-      <div class="detail-section-title">RF Configuration</div>
-      <div class="detail-row"><span class="detail-key">Frequency</span><span class="detail-val">${t.freq} MHz</span></div>
-      <div class="detail-row"><span class="detail-key">Bandwidth</span><span class="detail-val">${t.bw} MHz</span></div>
-      <div class="detail-row"><span class="detail-key">TX Power</span><span class="detail-val">${t.tx} dBm</span></div>
+
+    <div class="info-section">
+      <div class="info-section-title">Modes d'economie d'energie</div>
+      <div class="esmode-grid">${esModes}</div>
     </div>
-    <div class="detail-section">
-      <div class="detail-section-title">Energy Saving Modes</div>
-      <div class="esmode-grid">${t.esmode.map((v,i)=>`<div class="esmode-box${v?' active':''}">ES${i+1}</div>`).join('')}</div>
+
+    <div class="info-section">
+      <div class="info-section-title">Consommation energetique</div>
+      <div class="info-row"><span class="info-key">Consommation actuelle</span><span class="info-val" style="color:${c}">${t.energy} W</span></div>
+      <div class="info-row"><span class="info-key">En kilowatts</span><span class="info-val">${(t.energy/1000).toFixed(3)} kW</span></div>
+      <div class="info-row"><span class="info-key">Facteur de charge</span><span class="info-val">${Math.round((t.load/10000)*100)}%</span></div>
+      <div class="info-row"><span class="info-key">P_static (3GPP)</span><span class="info-val">${(t.tx * t.antennas).toFixed(1)}</span></div>
+      <div class="info-row"><span class="info-key">P_dynamic (3GPP)</span><span class="info-val">${(t.load/1000 * t.tx * t.antennas).toFixed(2)}</span></div>
     </div>
-    <div class="detail-section">
-      <div class="detail-section-title">Energy Consumption</div>
-      <div class="detail-row"><span class="detail-key">Current</span><span class="detail-val" style="color:${c}">${t.energy} W</span></div>
-      <div class="detail-row"><span class="detail-key">In kW</span><span class="detail-val">${(t.energy/1000).toFixed(3)} kW</span></div>
-      <div class="detail-row"><span class="detail-key">Load factor</span><span class="detail-val">${Math.round((t.load/5000)*100)}%</span></div>
-    </div>
-    <button class="predict-btn" onclick="predictForTower('${t.id}')">⚡ Re-predict Energy</button>
-    <div id="tpred" style="margin-top:10px"></div>`;
-  document.getElementById('detail-panel').classList.add('open');
+
+    <button class="predict-btn" onclick="switchTab('prediction',document.querySelectorAll('.panel-tab')[1])">⚡ Lancer une prediction ML</button>
+  `;
 }
 
-function closeDetail(){
-  document.getElementById('detail-panel').classList.remove('open');
+// ── PREDICTION TAB ──
+function renderPredTab(t){
+  const c=sColor(t.status), bg=sBg(t.status);
+  document.getElementById('pred-content').innerHTML=`
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px">
+      <div style="font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Parametres de la tour ${t.id}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
+        <div><span style="color:var(--muted)">Traffic load</span><br><b>${t.load} Mbps</b></div>
+        <div><span style="color:var(--muted)">Antennes</span><br><b>${t.antennas}</b></div>
+        <div><span style="color:var(--muted)">Bandwidth</span><br><b>${t.bw} MHz</b></div>
+        <div><span style="color:var(--muted)">TX Power</span><br><b>${t.tx} dBm</b></div>
+        <div><span style="color:var(--muted)">Frequence</span><br><b>${t.freq} MHz</b></div>
+        <div><span style="color:var(--muted)">ESMode actifs</span><br><b>${t.esmode.filter(v=>v).length}/6</b></div>
+      </div>
+    </div>
+
+    <div class="result-box" id="pred-result-box">
+      <div style="font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">Prediction ML — Stacking (LGB+CB+RF)</div>
+      <div class="result-val" id="pred-result-val" style="color:${c}">${t.energy}</div>
+      <div class="result-unit">WATTS (valeur actuelle)</div>
+      <div class="result-status" id="pred-result-status" style="background:${bg};color:${c}">${t.status==='critical'?'CRITIQUE':''}${t.status==='warning'?'ATTENTION':''}${t.status==='normal'?'NORMAL':''} — Valeur mesuree</div>
+    </div>
+
+    <button class="predict-btn" id="pred-btn-${t.id}" onclick="runPrediction('${t.id}')">⚡ Re-predire via API Azure</button>
+
+    <div style="margin-top:14px">
+      <div class="prog-item"><div class="prog-top"><span class="prog-label">Niveau energetique</span><span class="prog-val" id="prog-energy">${Math.round((t.energy/100)*100)}%</span></div><div class="prog-bg"><div class="prog-fill" id="fill-energy" style="width:${Math.round((t.energy/100)*100)}%;background:${c}"></div></div></div>
+      <div class="prog-item"><div class="prog-top"><span class="prog-label">Efficacite ESMode</span><span class="prog-val" id="prog-esmode">${Math.round((t.esmode.filter(v=>v).length/6)*100)}%</span></div><div class="prog-bg"><div class="prog-fill" id="fill-esmode" style="width:${Math.round((t.esmode.filter(v=>v).length/6)*100)}%;background:var(--success)"></div></div></div>
+      <div class="prog-item"><div class="prog-top"><span class="prog-label">Charge reseau</span><span class="prog-val" id="prog-load">${Math.round((t.load/10000)*100)}%</span></div><div class="prog-bg"><div class="prog-fill" id="fill-load" style="width:${Math.round((t.load/10000)*100)}%;background:var(--purple)"></div></div></div>
+    </div>
+  `;
+}
+
+async function runPrediction(id){
+  const t = towers.find(x=>x.id===id);
+  const btn = document.getElementById(`pred-btn-${id}`);
+  btn.disabled=true; btn.textContent='Computing...';
+  try{
+    const r = await fetch(API+'/predict',{
+      method:'POST',headers:{'Content-Type':'application/json','X-API-Key':'sne-admin-key-2024'},
+      body:JSON.stringify({traffic_load:t.load,antenna_count:t.antennas,bandwidth:t.bw,tx_power:t.tx,frequency:t.freq,esmode_sum:t.esmode.filter(v=>v).length})
+    });
+    const d = await r.json();
+    const v = d.energy_prediction;
+    const s = v>70?'critical':v>40?'warning':'normal';
+    const c=sColor(s), bg=sBg(s);
+    document.getElementById('pred-result-val').textContent=v.toFixed(1);
+    document.getElementById('pred-result-val').style.color=c;
+    document.getElementById('pred-result-box').style.borderColor=c;
+    const st=document.getElementById('pred-result-status');
+    st.textContent=s==='critical'?'CRITIQUE — Consommation elevee':s==='warning'?'ATTENTION — Surveiller':'NORMAL — Efficace';
+    st.style.background=bg; st.style.color=c;
+    const ep=Math.min(100,Math.round((v/100)*100));
+    document.getElementById('prog-energy').textContent=ep+'%';
+    document.getElementById('fill-energy').style.width=ep+'%';
+    document.getElementById('fill-energy').style.background=c;
+  }catch(e){
+    document.getElementById('pred-result-val').textContent='ERR';
+  }
+  btn.disabled=false; btn.textContent='⚡ Re-predire via API Azure';
+}
+
+// ── PERFORMANCE CHARTS ──
+function initPerfCharts(){
+  if(chartInst.models) chartInst.models.destroy();
+  chartInst.models = new Chart(document.getElementById('chart-models'),{
+    type:'bar',
+    data:{labels:['Random Forest','LightGBM','CatBoost','⭐ Stacking'],
+      datasets:[{data:[2.48,2.23,2.15,2.02],backgroundColor:['rgba(14,165,233,0.7)','rgba(14,165,233,0.7)','rgba(14,165,233,0.7)','rgba(22,163,74,0.9)'],borderRadius:5}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'},title:{display:true,text:'MAE (W)',color:'#94a3b8',font:{size:9}}}}}
+  });
+
+  if(chartInst.gen) chartInst.gen.destroy();
+  chartInst.gen = new Chart(document.getElementById('chart-gen'),{
+    type:'bar',
+    data:{labels:['G1 Temporel','G2 Zero-shot','G3 Config inedite'],
+      datasets:[{data:[2.02,7.30,4.55],backgroundColor:['rgba(22,163,74,0.8)','rgba(217,119,6,0.8)','rgba(14,165,233,0.8)'],borderRadius:5}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'},title:{display:true,text:'MAE (W)',color:'#94a3b8',font:{size:9}}}}}
+  });
+}
+
+// ── SHAP ──
+function initShapContent(){
+  const features = [
+    {name:'RUType',val:0.82,cat:'Hardware',color:'#7c3aed'},
+    {name:'bs_mean_load',val:0.61,cat:'Agregation',color:'#0ea5e9'},
+    {name:'P_dynamic',val:0.54,cat:'3GPP',color:'#16a34a'},
+    {name:'load',val:0.47,cat:'Charge',color:'#d97706'},
+    {name:'heure_sin',val:0.38,cat:'Temporelle',color:'#0ea5e9'},
+    {name:'P_static',val:0.31,cat:'3GPP',color:'#16a34a'},
+    {name:'Bandwidth',val:0.28,cat:'Hardware',color:'#7c3aed'},
+    {name:'heure_cos',val:0.24,cat:'Temporelle',color:'#0ea5e9'},
+    {name:'load_carre',val:0.19,cat:'Charge',color:'#d97706'},
+    {name:'bs_std_load',val:0.15,cat:'Agregation',color:'#0ea5e9'},
+  ];
+  document.getElementById('shap-bars').innerHTML = features.map(f=>`
+    <div class="shap-bar-item">
+      <span class="shap-label">${f.name}</span>
+      <div class="shap-bar-bg">
+        <div class="shap-bar-fill" style="width:${Math.round(f.val/0.82*100)}%;background:${f.color}">${Math.round(f.val/0.82*100)>20?f.val:''}
+        </div>
+      </div>
+      <span class="shap-val">${f.val}</span>
+    </div>`).join('');
+
+  if(chartInst.shapCat) chartInst.shapCat.destroy();
+  chartInst.shapCat = new Chart(document.getElementById('chart-shap-cat'),{
+    type:'doughnut',
+    data:{labels:['Hardware','Agregation BS','Physique 3GPP','Charge','Temporelle'],
+      datasets:[{data:[38,24,21,11,6],backgroundColor:['#7c3aed','#0ea5e9','#16a34a','#d97706','#ec4899'],borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,plugins:{legend:{display:true,labels:{color:'#94a3b8',font:{size:10}}}},cutout:'55%'}
+  });
+}
+
+// ── SCATTER ──
+function initScatterContent(){
+  const pts = Array.from({length:200},()=>{
+    const r=Math.random()*90+5;
+    return {x:r, y:Math.max(0,r+(Math.random()-0.5)*7)};
+  });
+
+  if(chartInst.scatter) chartInst.scatter.destroy();
+  chartInst.scatter = new Chart(document.getElementById('chart-scatter'),{
+    type:'scatter',
+    data:{datasets:[
+      {label:'Stacking',data:pts,backgroundColor:'rgba(14,165,233,0.4)',pointRadius:3},
+      {label:'Diagonale',data:[{x:0,y:0},{x:95,y:95}],type:'line',borderColor:'rgba(220,38,38,0.5)',borderDash:[5,5],pointRadius:0,borderWidth:1.5}
+    ]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'},title:{display:true,text:'Valeurs reelles (W)',color:'#94a3b8',font:{size:9}}},
+      y:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'},title:{display:true,text:'Predictions (W)',color:'#94a3b8',font:{size:9}}}
+    }}
+  });
+
+  const bins=Array(16).fill(0);
+  pts.forEach(p=>{const i=Math.min(15,Math.floor((p.y-p.x+16)/2)); if(i>=0) bins[i]++;});
+  if(chartInst.residus) chartInst.residus.destroy();
+  chartInst.residus = new Chart(document.getElementById('chart-residus'),{
+    type:'bar',
+    data:{labels:Array.from({length:16},(_,i)=>`${-16+i*2}W`),
+      datasets:[{data:bins,backgroundColor:'rgba(124,58,237,0.7)',borderRadius:3}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'}},
+      y:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#f1f5f9'}}
+    }}
+  });
+}
+
+// ── PANEL TABS ──
+function switchTab(id, el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+function closePanel(){
+  document.getElementById('analytics-panel').classList.remove('open');
   selectedTower=null;
   filterTowers();
+  setTimeout(()=>map.invalidateSize(),350);
 }
 
-async function predictForTower(id){
-  const t=towers.find(x=>x.id===id);
-  const btn=document.querySelector('.predict-btn');
-  btn.disabled=true;btn.textContent='Computing...';
-  try{
-    const r=await fetch(API+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({traffic_load:t.load,antenna_count:t.antennas,bandwidth:t.bw,tx_power:t.tx,frequency:t.freq,esmode_sum:t.esmode.filter(v=>v).length})});
-    const d=await r.json();
-    const v=d.energy_prediction,c=sColor(v>700?'critical':v>400?'warning':'normal'),bg=sBg(v>700?'critical':v>400?'warning':'normal');
-    document.getElementById('tpred').innerHTML=`<div style="background:${bg};border:1px solid ${c}44;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px;font-weight:800;color:${c};font-family:'Courier New',monospace">${v.toFixed(1)} W</div><div style="font-size:10px;color:${c};font-weight:600;margin-top:4px;letter-spacing:1px;text-transform:uppercase">ML Prediction</div></div>`;
-  }catch(e){document.getElementById('tpred').innerHTML=`<div style="font-size:11px;color:var(--danger);text-align:center;padding:8px;background:var(--danger-bg);border-radius:8px">API connection error</div>`;}
-  btn.disabled=false;btn.textContent='⚡ Re-predict Energy';
-}
-
-// STATS
-function initStats(){
-  const avg=Math.round(towers.reduce((s,t)=>s+t.energy,0)/towers.length);
-  const peak=Math.max(...towers.map(t=>t.energy));
-  document.getElementById('s-avg').textContent=avg+'W';
-  document.getElementById('s-peak').textContent=peak+'W';
-  const cities=[...new Set(towers.map(t=>t.city))];
-  const cityAvg=cities.map(c=>Math.round(towers.filter(t=>t.city===c).reduce((s,t)=>s+t.energy,0)/towers.filter(t=>t.city===c).length));
-  const opts={plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#f1f5f9'}}}};
-  if(chartCity)chartCity.destroy();
-  chartCity=new Chart(document.getElementById('chart-city'),{type:'bar',data:{labels:cities,datasets:[{data:cityAvg,backgroundColor:cityAvg.map(v=>v>700?'#dc2626':v>400?'#d97706':'#16a34a'),borderRadius:5,borderSkipped:false}]},options:opts});
-  const crit=towers.filter(t=>t.status==='critical').length,warn=towers.filter(t=>t.status==='warning').length,norm=towers.filter(t=>t.status==='normal').length;
-  if(chartStatus)chartStatus.destroy();
-  chartStatus=new Chart(document.getElementById('chart-status'),{type:'doughnut',data:{labels:['Critical','Warning','Normal'],datasets:[{data:[crit,warn,norm],backgroundColor:['#dc2626','#d97706','#16a34a'],borderWidth:0,hoverOffset:6}]},options:{plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}},cutout:'60%'}});
-  if(chartLoad)chartLoad.destroy();
-  chartLoad=new Chart(document.getElementById('chart-load'),{type:'scatter',data:{datasets:[{data:towers.map(t=>({x:t.load,y:t.energy})),backgroundColor:towers.map(t=>sColor(t.status)),pointRadius:5,pointHoverRadius:7}]},options:{...opts,plugins:{legend:{display:false}},scales:{x:{...opts.scales.x,title:{display:true,text:'Load (Mbps)',color:'#64748b',font:{size:9}}},y:{...opts.scales.y,title:{display:true,text:'Energy (W)',color:'#64748b',font:{size:9}}}}}});
-  document.getElementById('full-table').innerHTML=towers.map(t=>`
-    <div class="tbl-row" onclick="switchPage('map',document.querySelectorAll('.nav-item')[0]);selectTower(towers.find(x=>x.id==='${t.id}'))">
-      <span style="font-family:'Courier New',monospace;color:var(--accent-dark);font-size:10px;font-weight:700">${t.id}</span>
-      <span style="color:var(--text2)">${t.city}</span>
-      <span style="color:var(--muted)">${t.vendor}</span>
-      <span style="color:var(--muted)">${t.freq}MHz</span>
-      <span style="color:var(--muted)">${t.load}M</span>
-      <span style="color:${sColor(t.status)};font-family:'Courier New',monospace;font-weight:700">${t.energy}W</span>
-      <span><span class="badge ${t.status==='critical'?'badge-danger':t.status==='warning'?'badge-warn':'badge-green'}">${t.status}</span></span>
-    </div>`).join('');
-}
-
-async function runPredict(){
-  const btn=document.getElementById('pbtn');
-  btn.disabled=true;btn.textContent='Computing...';
-  try{
-    const r=await fetch(API+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({traffic_load:+document.getElementById('p_tl').value,antenna_count:+document.getElementById('p_ac').value,bandwidth:+document.getElementById('p_bw').value,tx_power:+document.getElementById('p_tp').value,frequency:+document.getElementById('p_fr').value,esmode_sum:+document.getElementById('p_es').value})});
-    const d=await r.json();const v=d.energy_prediction;
-    const s=v>700?'critical':v>400?'warning':'normal';const c=sColor(s),bg=sBg(s);
-    const st=v>700?'Critical — High energy consumption':v>400?'Moderate — Normal operating range':'Efficient — Energy saving active';
-    const res=document.getElementById('presult');
-    res.style.borderColor=c;
-    document.getElementById('presult-val').textContent=v.toFixed(1);
-    document.getElementById('presult-val').style.color=c;
-    const pst=document.getElementById('presult-status');
-    pst.textContent=st;pst.style.background=bg;pst.style.color=c;
-  }catch(e){alert('API connection error');}
-  btn.disabled=false;btn.textContent='⚡ Predict Energy Consumption';
-}
-
-function switchPage(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  el.classList.add('active');
-  if(id==='stats')setTimeout(initStats,50);
-  if(id==='map')setTimeout(()=>map.invalidateSize(),100);
-}
-
-setInterval(()=>{document.getElementById('clock').textContent=new Date().toUTCString().slice(17,25)+' UTC';},1000);
 renderList(towers);
-initStats();
 </script>
 </body>
 </html>
